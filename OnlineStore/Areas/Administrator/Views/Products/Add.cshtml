@@ -1,4 +1,4 @@
-﻿<div class="container-fluid">
+<div class="container-fluid">
     <p>Add product</p>
 
     <form id="addProductForm" class="container mt-3">
@@ -76,6 +76,12 @@
             class="d-flex flex-wrap gap-3 mb-3"
         ></div>
 
+        <div class="mb-3">
+            <label for="administratorProductsView_category" class="form-label">@Resource.CatalogResources.Get("Category")</label>
+            <select id="administratorProductsView_category" name="CategoryId" asp-items="ViewBag.Categories" class="form-select">
+                <option value="">@Resource.CatalogResources.Get("NoCategory")</option>
+            </select>
+        </div>
         <button
             id="addProductBtn"
             type="submit"

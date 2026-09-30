@@ -1,4 +1,4 @@
-﻿import { fromEvent, Observable, of } from 'rxjs';
+import { fromEvent, merge, Observable, of } from 'rxjs';
 import {
     debounceTime,
     map,
@@ -86,8 +86,10 @@ export class PagedTable<T> {
     }
 
     private bindFilters(): void {
-        fromEvent(this.$searchInputs, 'keyup').pipe(
-            debounceTime(300),
+        merge(
+            fromEvent(this.$searchInputs.filter(':not(select)'), 'input').pipe(debounceTime(300)),
+            fromEvent(this.$searchInputs.filter('select'), 'change')
+        ).pipe(
             map(() => this.collectFilters()),
             tap(filters => {
                 this.currentFilters = filters;

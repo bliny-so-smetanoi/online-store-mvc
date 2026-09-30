@@ -1,3 +1,6 @@
+using Application.UseCases.Categories.Queries.GetCategories;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Resource;
 using Application.UseCases.Products.Commands.AddProduct;
 using Application.UseCases.Products.Commands.UpdateProduct;
 using Application.UseCases.Products.Dtos;
@@ -17,32 +20,43 @@ namespace OnlineStore.Areas.Administrator.Controllers;
 public class ProductsController(IMediator mediator) : Controller
 {
     [HttpGet]
-    public IActionResult Index()
+    public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
+        await PopulateCategories(cancellationToken);
         return View();
     }
 
     [HttpGet("Add")]
-    public IActionResult Add()
+    public async Task<IActionResult> Add(CancellationToken cancellationToken)
     {
+        await PopulateCategories(cancellationToken);
         return View();
     }
 
     [HttpGet("Edit/{id:guid}")]
-    public IActionResult Edit(Guid id)
+    public async Task<IActionResult> Edit(Guid id, CancellationToken cancellationToken)
     {
+        await PopulateCategories(cancellationToken);
         return View();
+    }
+
+    private async Task PopulateCategories(CancellationToken cancellationToken)
+    {
+        var categories = await mediator.Send(new GetCategoriesQuery(), cancellationToken);
+        ViewBag.Categories = new SelectList(categories.Value, "Id", "Name");
     }
 
     [HttpPost("AddProduct")]
     public async Task<IActionResult> AddProduct([FromForm] AddProductFormDto form, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
         var dto = await form.ToProductDtoAsync();
         var command = new AddProductCommand(dto);
         var result = await mediator.Send(command, cancellationToken);
 
         if (!result.IsSuccess)
-            return BadRequest(result.Error);
+            return BadRequest(CatalogResources.Get(result.Error));
 
         return Created();
     }
@@ -66,10 +80,12 @@ public class ProductsController(IMediator mediator) : Controller
     [HttpPut("Update/{id:guid}")]
     public async Task<IActionResult> Update(Guid id, [FromForm] UpdateProductFormDto form, CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
         var dto = await form.ToProductDtoAsync();
         var command = new UpdateProductCommand(id, dto);
         var result = await mediator.Send(command, cancellationToken);
-        return result.AsHttpResult();
+        return result.IsFailure ? BadRequest(CatalogResources.Get(result.Error)) : Ok();
     }
 }
 
@@ -99,6 +115,7 @@ public class UpdateProductFormDto : AddProductFormDto
             Price = this.Price,
             Description = this.Description,
             Quantity = this.Quantity,
+            CategoryId = this.CategoryId,
             Images = imageDtos
         };
     }
@@ -110,6 +127,7 @@ public class AddProductFormDto
     public decimal Price { get; set; }
     public string Description { get; set; }
     public int Quantity { get; set; }
+    public Guid? CategoryId { get; set; }
     public List<IFormFile> Images { get; set; } = new List<IFormFile>();
 
     public async Task<AddProductDto> ToProductDtoAsync()
@@ -136,6 +154,7 @@ public class AddProductFormDto
             Price = this.Price,
             Description = this.Description,
             Quantity = this.Quantity,
+            CategoryId = this.CategoryId,
             Images = imageDtos
         };
 

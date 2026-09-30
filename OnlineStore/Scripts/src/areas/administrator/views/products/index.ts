@@ -12,7 +12,14 @@ interface Product {
     description: string;
     price: number;
     quantity: number;
+    categoryName: string | null;
     created: string;
+}
+
+function escapeHtml(value: string): string {
+    const element = document.createElement("span");
+    element.textContent = value;
+    return element.innerHTML;
 }
 
 const table = new PagedTable<Product>({
@@ -32,8 +39,9 @@ const table = new PagedTable<Product>({
             <td>${item.description}</td>            
             <td>${item.price}</td>            
             <td>${item.quantity}</td>
+            <td>${escapeHtml(item.categoryName || "")}</td>
             <td>${dayjs(item.created).format('DD-MM-YYYY HH:mm:ss')}</td>
-            <td><a href="/Administrator/Products/Edit/${item.id}">Edit</a></td>
+            <td><a class="btn btn-sm btn-outline-primary" href="/Administrator/Products/Edit/${item.id}">Edit</a></td>
         </tr>
     `
 });

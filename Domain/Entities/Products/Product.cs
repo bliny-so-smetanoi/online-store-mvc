@@ -8,6 +8,7 @@ public class Product : AuditableEntity
     public decimal Price { get; protected set; }
     public string Description { get; protected set; }
     public int Quantity { get; protected set; }
+    public Guid? CategoryId { get; protected set; }
     public Category? Category { get; protected set; }
     public IList<Image> Images { get; protected set; } = new List<Image>();
     protected Product()
@@ -23,6 +24,7 @@ public class Product : AuditableEntity
         Images = images;
         Quantity = quantity;
         Category = category;
+        CategoryId = category?.Id;
     }
 
     public static Product Create(string name, decimal price, string description, List<Image> images,  int quantity, Category? category)
@@ -30,7 +32,7 @@ public class Product : AuditableEntity
         return new Product(name, price, description, images, quantity,  category);
     }
 
-    public void Update(string name, decimal price, string description, int quantity, List<Image> images)
+    public void Update(string name, decimal price, string description, int quantity, List<Image> images, Category? category)
     {
         Name = name;
         Price = price;
@@ -40,5 +42,7 @@ public class Product : AuditableEntity
             Images = images;
         }
         Quantity = quantity;
+        Category = category;
+        CategoryId = category?.Id;
     }
 }

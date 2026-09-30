@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <root>
     <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
@@ -57,4 +57,25 @@
     <data name="Logout" xml:space="preserve">
         <value>Шығу</value>
     </data>
+    <data name="AddCategory" xml:space="preserve"><value>Санат қосу</value></data>
+    <data name="BackToCategories" xml:space="preserve"><value>Санаттар тізіміне</value></data>
+    <data name="Categories" xml:space="preserve"><value>Санаттар</value></data>
+    <data name="Category" xml:space="preserve"><value>Санат</value></data>
+    <data name="CategoryActions" xml:space="preserve"><value>Әрекеттер</value></data>
+    <data name="CategoryCycle" xml:space="preserve"><value>Санаттың өзін немесе оның ішкі санатын ата-ана санаты ретінде таңдауға болмайды.</value></data>
+    <data name="CategoryDescriptionTooLong" xml:space="preserve"><value>Санат сипаттамасы 2000 таңбадан аспауы керек.</value></data>
+    <data name="CategoryInUse" xml:space="preserve"><value>Тауарлары немесе ішкі санаттары бар санатты жою мүмкін емес. Алдымен оларды ауыстырыңыз.</value></data>
+    <data name="CategoryName" xml:space="preserve"><value>Атауы</value></data>
+    <data name="CategoryNameRequired" xml:space="preserve"><value>Санат атауын енгізіңіз.</value></data>
+    <data name="CategoryNameTooLong" xml:space="preserve"><value>Санат атауы 200 таңбадан аспауы керек.</value></data>
+    <data name="CategoryNotFound" xml:space="preserve"><value>Санат табылмады. Санаттар тізімін жаңартыңыз.</value></data>
+    <data name="ConfirmDeleteCategory" xml:space="preserve"><value>Санатты жою керек пе?</value></data>
+    <data name="DeleteCategory" xml:space="preserve"><value>Санатты жою</value></data>
+    <data name="EditCategory" xml:space="preserve"><value>Өңдеу</value></data>
+    <data name="NoCategories" xml:space="preserve"><value>Санаттар әлі қосылмаған.</value></data>
+    <data name="NoCategory" xml:space="preserve"><value>Санатсыз</value></data>
+    <data name="NoParentCategory" xml:space="preserve"><value>Ата-ана санаты жоқ</value></data>
+    <data name="ParentCategory" xml:space="preserve"><value>Ата-ана санаты</value></data>
+    <data name="SaveCategory" xml:space="preserve"><value>Сақтау</value></data>
+    <data name="AllCategories" xml:space="preserve"><value>Барлық санаттар</value></data>
 </root>

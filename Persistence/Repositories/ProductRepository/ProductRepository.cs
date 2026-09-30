@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using Application.Dtos;
 using Application.Repositories.IProductRepository;
 using Application.UseCases.Products.Dtos;
@@ -47,6 +47,11 @@ public class ProductRepository(AppDbContext context) : IProductRepository
                 query = query.Where(t => t.Id == options.Id.Value);
             }
 
+            if (options.CategoryId is not null)
+            {
+                query = query.Where(t => t.CategoryId == options.CategoryId.Value);
+            }
+
             if (options.Created is not null)
             {
                 var date = options.Created.Value.Date;
@@ -64,6 +69,8 @@ public class ProductRepository(AppDbContext context) : IProductRepository
             .Select(x => new ProductDto()
             {
                 Id = x.Id,
+                CategoryId = x.CategoryId,
+                CategoryName = x.Category != null ? x.Category.Name : null,
                 Name = x.Name,
                 Description = x.Description,
                 Price = x.Price,

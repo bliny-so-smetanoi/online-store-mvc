@@ -1,9 +1,11 @@
-﻿using Application.Repositories.IProductRepository;
+﻿using Application.Repositories.ICategoryRepository;
+using Application.Repositories.IProductRepository;
 using Application.Repositories.ITodoItemRepository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.Context;
+using Persistence.Repositories.CategoryRepository;
 using Persistence.Repositories.ProductRepository;
 using Persistence.Repositories.TodoItemRepository;
 
@@ -23,5 +25,6 @@ public static class DependencyInjection
     {
         services.AddScoped<ITodoItemRepository, TodoItemRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
     }
 }

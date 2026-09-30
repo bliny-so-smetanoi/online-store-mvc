@@ -1,4 +1,4 @@
-﻿using Application.Abstractions;
+using Application.Abstractions;
 using Application.Repositories.IProductRepository;
 using Application.UseCases.Products.Dtos;
 using CSharpFunctionalExtensions;
@@ -10,7 +10,7 @@ public class GetProductForUpdateByIdQueryHandler(IProductRepository repository) 
 {
     public async Task<Result<UpdateViewProductDto>> Handle(GetProductForUpdateByIdQuery request, CancellationToken cancellationToken)
     {
-        var product = await repository.GetAsync(ProductSpecification.ById(request.Id), cancellationToken, x => x.Images);
+        var product = await repository.GetAsync(ProductSpecification.ById(request.Id), cancellationToken, x => x.Images, x => x.Category!);
         if (product is null)
         {
             return Result.Failure<UpdateViewProductDto>("Product not found");
@@ -18,6 +18,8 @@ public class GetProductForUpdateByIdQueryHandler(IProductRepository repository) 
         return new UpdateViewProductDto
         {
             Id = product.Id,
+            CategoryId = product.CategoryId,
+            CategoryName = product.Category?.Name,
             Name = product.Name,
             Description = product.Description,
             Price = product.Price,

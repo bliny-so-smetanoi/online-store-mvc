@@ -1,7 +1,7 @@
-﻿@using Resource
+@using Resource
 <div class="container-fluid">
     <p>Products view</p>
-    <a asp-action="Add">Add product</a>
+    <a class="btn btn-primary" asp-action="Add">Add product</a>
         
     <p class="h3">Product list:</p>
     <table class="table table-striped table-bordered">
@@ -11,6 +11,7 @@
         <th scope="col">Description</th>
         <th scope="col">Price</th>
         <th scope="col">Quantity</th>
+        <th scope="col">Category</th>
         <th scope="col">Created date</th>
         <th scope="col"></th>
         <tr>
@@ -19,6 +20,12 @@
             <td> <input class="form-control form-control-sm column-search" data-field="description" placeholder="Description"/> </td>
             <td> <input class="form-control form-control-sm column-search" data-field="price" placeholder="Price"/> </td>
             <td> <input class="form-control form-control-sm column-search" data-field="quantity" placeholder="Quantity"/> </td>
+            <td>
+                <select class="form-select form-select-sm column-search" data-field="categoryId"
+                        asp-items="ViewBag.Categories" aria-label="@CatalogResources.Get("Category")">
+                    <option value="">@CatalogResources.Get("AllCategories")</option>
+                </select>
+            </td>
             <td> <input class="form-control form-control-sm column-search" data-field="created" placeholder="Created"/> </td>
         </tr>
         </thead>

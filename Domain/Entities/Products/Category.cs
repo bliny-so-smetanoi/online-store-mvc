@@ -10,6 +10,13 @@ public class Category : AuditableEntity
     
     public List<Category> Children { get; protected set; } = new List<Category>();
 
+    public void Update(string name, string description, Category? parent)
+    {
+        Name = name;
+        Description = description;
+        Parent = parent;
+    }
+
     public static Category Create(string name, string description, Category? parent)
     {
         return new Category

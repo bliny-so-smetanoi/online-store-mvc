@@ -1,4 +1,4 @@
-﻿@using Resource
+@using Resource
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -26,6 +26,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" asp-area="Administrator" asp-controller="Products" asp-action="Index">Warehouse</a></li>
+                        <li><a class="dropdown-item" asp-area="Administrator" asp-controller="Categories" asp-action="Index">@CatalogResources.Get("Categories")</a></li>
                         <li><a class="dropdown-item" href="#">Orders</a></li>
                         <li><a class="dropdown-item" asp-area="Administrator" asp-controller="Storybook" asp-action="Index">Storybook</a></li>
                         <li><a class="dropdown-item" href="http://localhost:8080/admin/master/console/#/web-net">Users management</a></li>

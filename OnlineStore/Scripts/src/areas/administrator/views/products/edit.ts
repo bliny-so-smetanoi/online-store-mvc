@@ -1,4 +1,4 @@
-﻿import $ from "jquery";
+import $ from "jquery";
 import { fromEvent, of } from "rxjs";
 import {
     catchError,
@@ -23,6 +23,7 @@ interface ProductForUpdateResponse {
     description: string;
     price: number;
     quantity: number;
+    categoryId: string | null;
     images: ProductImageResponse[];
 }
 
@@ -315,6 +316,7 @@ $(() => {
             );
         });
 
+        formData.append("CategoryId", String($("#administratorProductsView_category").val() || ""));
         return formData;
     }
 
@@ -329,6 +331,7 @@ $(() => {
         $price.val(product.price);
 
         $quantity.val(product.quantity);
+        $('#administratorProductsView_category').val(product.categoryId || '');
 
         renderExistingImages(
             product.images || []
@@ -336,6 +339,7 @@ $(() => {
     }
 
     function loadProduct(): void {
+        submitButton.disabled = true;
 
         httpClient
             .get$<ProductForUpdateResponse>(
@@ -363,6 +367,7 @@ $(() => {
                 }
 
                 fillForm(product);
+                submitButton.disabled = false;
             });
     }
 

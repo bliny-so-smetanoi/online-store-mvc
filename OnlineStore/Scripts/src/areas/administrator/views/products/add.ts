@@ -1,4 +1,4 @@
-﻿import $ from "jquery";
+import $ from "jquery";
 import { fromEvent, of } from "rxjs";
 import { catchError, exhaustMap, finalize, map } from "rxjs/operators";
 
@@ -196,6 +196,7 @@ $(() => {
             );
         });
 
+        formData.append("CategoryId", String($("#administratorProductsView_category").val() || ""));
         return formData;
     }
 
