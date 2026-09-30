@@ -46,3 +46,6 @@ appsettings.*.Local.json
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+# Web static assets
+/OnlineStore/wwwroot/
