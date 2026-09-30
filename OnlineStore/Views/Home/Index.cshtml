@@ -1,0 +1,15 @@
+﻿@using KeycloakExtension
+@using Resource
+@model CSharpFunctionalExtensions.Result
+@{
+    ViewData["Title"] = @SharedResources.HomePage;
+}
+
+<div class="text-center">
+    <h1 class="display-4">@SharedResources.WelcomeTitle</h1>
+    
+    @section Scripts
+    {
+        <script src="~/js/src/views/home/index/index.bundle.js"></script>
+    }
+</div>

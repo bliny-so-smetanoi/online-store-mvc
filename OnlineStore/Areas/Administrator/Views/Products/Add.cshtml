@@ -1,0 +1,94 @@
+﻿<div class="container-fluid">
+    <p>Add product</p>
+
+    <form id="addProductForm" class="container mt-3">
+        
+        <div class="mb-3">
+            <label for="administratorProductsView_name" class="form-label">
+                Name
+            </label>
+
+            <input
+                id="administratorProductsView_name"
+                type="text"
+                class="form-control"
+            />
+
+            <div id="nameError" class="invalid-feedback"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="administratorProductsView_description" class="form-label">
+                Description
+            </label>
+
+            <input
+                id="administratorProductsView_description"
+                type="text"
+                class="form-control"
+            />
+
+            <div id="descriptionError" class="invalid-feedback"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="administratorProductsView_price" class="form-label">
+                Price
+            </label>
+
+            <input
+                id="administratorProductsView_price"
+                type="text"
+                class="form-control"
+            />
+
+            <div id="priceError" class="invalid-feedback"></div>
+        </div>
+        <div class="mb-3">
+            <label for="administratorProductsView_quantity" class="form-label">
+                Quantity
+            </label>
+
+            <input
+                id="administratorProductsView_quantity"
+                type="text"
+                class="form-control"
+            />
+
+            <div id="quantityError" class="invalid-feedback"></div>
+        </div>
+        <div class="mb-3">
+            <label for="formFileMultiple" class="form-label">
+                Product images
+            </label>
+
+            <input
+                class="form-control"
+                type="file"
+                id="formFileMultiple"
+                multiple
+                accept="image/*"
+            />
+        </div>
+
+        <div
+            id="imagePreview"
+            class="d-flex flex-wrap gap-3 mb-3"
+        ></div>
+
+        <button
+            id="addProductBtn"
+            type="submit"
+            class="btn btn-primary"
+        >
+            Add product
+        </button>
+    </form>
+</div>
+
+
+
+@section Scripts
+{ 
+    <script src="~/js/src/areas/administrator/views/products/add.bundle.js"></script>
+}

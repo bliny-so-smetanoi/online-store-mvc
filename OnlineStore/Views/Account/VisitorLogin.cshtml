@@ -1,0 +1,28 @@
+﻿@model Application.Services.IVisitorService.Dtos.VisitorLoginVm
+
+@{
+}
+
+<h2>Visitor Login</h2>
+
+<form asp-action="VisitorLogin" method="post">
+    @Html.AntiForgeryToken()
+
+    <div>
+        <label asp-for="Phone"></label>
+        <input asp-for="Phone" />
+        <span asp-validation-for="Phone"></span>
+    </div>
+
+    <div>
+        <label asp-for="Code"></label>
+        <input asp-for="Code" />
+        <span asp-validation-for="Code"></span>
+    </div>
+
+    <button type="submit">Войти как посетитель</button>
+</form>
+
+<hr />
+
+@* <a asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl">Войти через Keycloak</a> *@

@@ -1,0 +1,41 @@
+﻿@using Resource
+<div class="container-fluid">
+    <p>Products view</p>
+    <a asp-action="Add">Add product</a>
+        
+    <p class="h3">Product list:</p>
+    <table class="table table-striped table-bordered">
+        <thead>
+        <th scope="col">Id</th>
+        <th scope="col">Name</th>
+        <th scope="col">Description</th>
+        <th scope="col">Price</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Created date</th>
+        <th scope="col"></th>
+        <tr>
+            <td> <input class="form-control form-control-sm column-search" data-field="id" placeholder="Id"/> </td> 
+            <td> <input class="form-control form-control-sm column-search" data-field="name" placeholder="Name"/> </td> 
+            <td> <input class="form-control form-control-sm column-search" data-field="description" placeholder="Description"/> </td>
+            <td> <input class="form-control form-control-sm column-search" data-field="price" placeholder="Price"/> </td>
+            <td> <input class="form-control form-control-sm column-search" data-field="quantity" placeholder="Quantity"/> </td>
+            <td> <input class="form-control form-control-sm column-search" data-field="created" placeholder="Created"/> </td>
+        </tr>
+        </thead>
+    
+        <tbody id="about-table-body" class="table-group-divider">
+        </tbody>
+    </table>
+    <nav aria-label="Todo pagination">
+        <ul class="pagination pagination-sm" id="about-pagination"></ul>
+    </nav>
+    
+</div>
+
+
+
+
+@section Scripts
+{ 
+    <script src="~/js/src/areas/administrator/views/products/index.bundle.js"></script>
+}
