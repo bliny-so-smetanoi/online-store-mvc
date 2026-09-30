@@ -1,0 +1,29 @@
+@model Application.UseCases.Categories.Dtos.CategoryDto
+@using Resource
+@{
+    var isNew = Model.Id == Guid.Empty;
+    ViewData["Title"] = CatalogResources.Get(isNew ? "AddCategory" : "EditCategory");
+}
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+    <form method="post" action="@(isNew ? Url.Action("Create") : Url.Action("Update", new { id = Model.Id }))">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label">@CatalogResources.Get("CategoryName")</label>
+            <input asp-for="Name" class="form-control" required maxlength="200" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label">@CatalogResources.Get("Description")</label>
+            <textarea asp-for="Description" class="form-control" maxlength="2000"></textarea>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ParentId" class="form-label">@CatalogResources.Get("ParentCategory")</label>
+            <select asp-for="ParentId" asp-items="ViewBag.Parents" class="form-select">
+                <option value="">@CatalogResources.Get("NoParentCategory")</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">@CatalogResources.Get("SaveCategory")</button>
+        <a asp-action="Index" class="btn btn-secondary">@CatalogResources.Get("BackToCategories")</a>
+    </form>
+</div>
