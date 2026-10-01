@@ -26,7 +26,7 @@ $(() => {
     const submitButton = document.getElementById("addTodoBtn") as HTMLButtonElement;
 
     const $todoTitle = $("#storybookView_title");
-    const $todoTitleError = $("#todoError");
+    const $todoTitleError = $("#titleError");
 
     function clearValidation(): void {
         $todoTitle.removeClass("is-invalid");

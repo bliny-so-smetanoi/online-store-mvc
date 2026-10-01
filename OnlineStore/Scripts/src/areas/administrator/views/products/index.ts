@@ -35,8 +35,7 @@ const table = new PagedTable<Product>({
     renderRow: item => `
         <tr>
             <td>${item.id}</td>
-            <td>${item.name}</td>
-            <td>${item.description}</td>            
+            <td>${item.name}</td>            
             <td>${item.price}</td>            
             <td>${item.quantity}</td>
             <td>${escapeHtml(item.categoryName || "")}</td>

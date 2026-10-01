@@ -2,7 +2,7 @@
     ViewData["Title"] = "Edit product";
 }
 
-<div class="container-fluid">
+<div class="container mt-4">
 
     <p class="h3 mb-4">Edit product</p>
 
@@ -45,11 +45,11 @@
                 Description
             </label>
 
-            <input
+            <textarea
                 id="administratorProductsView_description"
-                type="text"
+rows="4" cols="50"
                 class="form-control"
-            />
+            ></textarea>
 
             <div
                 id="descriptionError"
@@ -101,7 +101,12 @@
             ></div>
 
         </div>
-        
+        <div class="mb-3">
+            <label for="administratorProductsView_category" class="form-label">@Resource.CatalogResources.Get("Category")</label>
+            <select id="administratorProductsView_category" name="CategoryId" asp-items="ViewBag.Categories" class="form-select">
+                <option value="">@Resource.CatalogResources.Get("NoCategory")</option>
+            </select>
+        </div>
         <div class="mb-3">
 
             <label
@@ -126,12 +131,7 @@
             class="d-flex flex-wrap gap-3 mb-3"
         ></div>
 
-        <div class="mb-3">
-            <label for="administratorProductsView_category" class="form-label">@Resource.CatalogResources.Get("Category")</label>
-            <select id="administratorProductsView_category" name="CategoryId" asp-items="ViewBag.Categories" class="form-select">
-                <option value="">@Resource.CatalogResources.Get("NoCategory")</option>
-            </select>
-        </div>
+       
         <button
             id="updateProductBtn"
             type="submit"
