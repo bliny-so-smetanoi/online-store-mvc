@@ -18,7 +18,7 @@ public class GetProductsVisitorQueryHandler(IProductRepository productRepository
 
         if (!string.IsNullOrWhiteSpace(request.SearchString))
         {
-            searchSpec &= ProductSpecification.ByName(request.SearchString);
+            searchSpec &= ProductSpecification.NameContains(request.SearchString.Trim());
         }
         
         var products = await productRepository.GetAllPagedWithImageAsync(request.Filters, searchSpec, cancellationToken);

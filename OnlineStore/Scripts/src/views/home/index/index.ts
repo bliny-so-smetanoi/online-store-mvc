@@ -1,3 +1,7 @@
+import $ from "jquery";
+import {EMPTY, fromEvent, merge} from "rxjs";
+import {catchError, exhaustMap, finalize, map, startWith, switchMap, take, takeUntil, tap} from "rxjs/operators";
+import {fromFetch} from "rxjs/fetch";
 import type {PagedResult} from "../../../shared/pagedTable";
 
 interface Product {
@@ -8,108 +12,104 @@ interface Product {
     imageId: string | null;
 }
 
-const catalog = document.querySelector<HTMLElement>("#product-catalog")!;
-const list = document.querySelector<HTMLDivElement>("#product-list")!;
-const template = document.querySelector<HTMLTemplateElement>("#product-card-template")!;
-const form = document.querySelector<HTMLFormElement>("#product-search")!;
-const searchInput = document.querySelector<HTMLInputElement>("#product-search-input")!;
-const showMore = document.querySelector<HTMLButtonElement>("#products-show-more")!;
-const retry = document.querySelector<HTMLButtonElement>("#products-retry")!;
-const loading = document.querySelector<HTMLElement>("#products-loading")!;
-const empty = document.querySelector<HTMLElement>("#products-empty")!;
-const error = document.querySelector<HTMLElement>("#products-error")!;
-const priceFormat = new Intl.NumberFormat("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+$(() => {
+    const $catalog = $("#product-catalog");
+    const $list = $("#product-list");
+    const $template = $("#product-card-template");
+    const $form = $("#product-search");
+    const $searchInput = $("#product-search-input");
+    const $showMore = $("#products-show-more");
+    const $retry = $("#products-retry");
+    const $loading = $("#products-loading");
+    const $empty = $("#products-empty");
+    const $error = $("#products-error");
+    const priceFormat = new Intl.NumberFormat("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
-let page = 0;
-let totalPages = 0;
-let searchString = "";
-let activeRequest: AbortController | null = null;
+    function renderProducts(products: Product[]): JQuery<HTMLElement> {
+        let $cards = $<HTMLElement>();
 
-function renderProducts(products: Product[]): DocumentFragment {
-    const fragment = document.createDocumentFragment();
+        products.forEach(product => {
+            const $card = $($template.prop("content") as DocumentFragment).children().clone();
+            $card.find("[data-product-name]").text(product.name);
+            $card.find("[data-product-description]").text(product.description.length > 250
+                ? `${product.description.slice(0, 249)}…`
+                : product.description);
+            $card.find("[data-product-price]").text(priceFormat.format(product.price));
 
-    products.forEach(product => {
-        const card = template.content.cloneNode(true) as DocumentFragment;
-        card.querySelector<HTMLElement>("[data-product-name]")!.textContent = product.name;
-        card.querySelector<HTMLElement>("[data-product-description]")!.textContent = product.description;
-        card.querySelector<HTMLElement>("[data-product-price]")!.textContent = priceFormat.format(product.price);
+            if (product.imageId) {
+                const $image = $card.find("img");
+                const $placeholder = $card.find("[data-product-no-image]");
+                const imageUrl = new URL($catalog.data("image-url"), window.location.href);
+                imageUrl.searchParams.set("id", product.imageId);
+                $image.attr("alt", product.name);
+                merge(fromEvent<Event>($image, "load"), fromEvent<Event>($image, "error")).pipe(
+                    take(1),
+                    takeUntil(fromEvent($form, "submit"))
+                ).subscribe(event => {
+                    if (event.type === "error") {
+                        $image.prop("hidden", true);
+                        $placeholder.prop("hidden", false);
+                    }
+                });
+                $image.attr("src", imageUrl.toString()).prop("hidden", false);
+                $placeholder.prop("hidden", true);
+            }
 
-        if (product.imageId) {
-            const image = card.querySelector<HTMLImageElement>("img")!;
-            const placeholder = card.querySelector<HTMLElement>("[data-product-no-image]")!;
-            const imageUrl = new URL(catalog.dataset.imageUrl!, window.location.href);
-            imageUrl.searchParams.set("id", product.imageId);
-            image.alt = product.name;
-            image.addEventListener("error", () => {
-                image.hidden = true;
-                placeholder.hidden = false;
-            });
-            image.src = imageUrl.toString();
-            image.hidden = false;
-            placeholder.hidden = true;
-        }
-
-        fragment.appendChild(card);
-    });
-
-    return fragment;
-}
-
-async function loadNextPage(): Promise<void> {
-    if (activeRequest) return;
-
-    const request = new AbortController();
-    activeRequest = request;
-    loading.hidden = false;
-    error.hidden = true;
-    empty.hidden = true;
-    showMore.disabled = true;
-    list.setAttribute("aria-busy", "true");
-
-    const url = new URL(catalog.dataset.productsUrl!, window.location.href);
-    url.searchParams.set("page", String(page + 1));
-    url.searchParams.set("searchString", searchString);
-
-    try {
-        const response = await fetch(url.toString(), {
-            signal: request.signal,
-            headers: {"Accept": "application/json"}
+            $cards = $cards.add($card);
         });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-        const result: PagedResult<Product> = await response.json();
-        if (activeRequest !== request) return;
-
-        list.appendChild(renderProducts(result.items));
-        page = result.page;
-        totalPages = result.totalPages;
-        empty.hidden = list.childElementCount > 0;
-    } catch {
-        if (activeRequest !== request) return;
-        error.hidden = false;
-    } finally {
-        if (activeRequest === request) {
-            activeRequest = null;
-            loading.hidden = true;
-            showMore.disabled = false;
-            showMore.hidden = page >= totalPages || !error.hidden;
-            list.setAttribute("aria-busy", "false");
-        }
+        return $cards;
     }
-}
 
-form.addEventListener("submit", event => {
-    event.preventDefault();
-    activeRequest?.abort();
-    activeRequest = null;
-    searchString = searchInput.value.trim();
-    page = 0;
-    totalPages = 0;
-    list.replaceChildren();
-    showMore.hidden = true;
-    void loadNextPage();
+    fromEvent<Event>($form, "submit").pipe(
+        tap(event => event.preventDefault()),
+        map(() => String($searchInput.val() || "").trim()),
+        startWith(String($searchInput.val() || "").trim()),
+        switchMap(searchString => {
+            let page = 0;
+            let totalPages = 0;
+            $list.empty();
+            $showMore.prop("hidden", true);
+
+            return merge(fromEvent($showMore, "click"), fromEvent($retry, "click")).pipe(
+                startWith(null),
+                exhaustMap(() => {
+                    $loading.prop("hidden", false);
+                    $error.prop("hidden", true);
+                    $empty.prop("hidden", true);
+                    $showMore.prop("disabled", true);
+                    $list.attr("aria-busy", "true");
+
+                    const url = new URL($catalog.data("products-url"), window.location.href);
+                    url.searchParams.set("page", String(page + 1));
+                    url.searchParams.set("searchString", searchString);
+
+                    return fromFetch<PagedResult<Product>>(url.toString(), {
+                        headers: {"Accept": "application/json"},
+                        selector: response => {
+                            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                            return response.json();
+                        }
+                    }).pipe(
+                        tap(result => {
+                            $list.append(renderProducts(result.items));
+                            page = result.page;
+                            totalPages = result.totalPages;
+                            $empty.prop("hidden", $list.children().length > 0);
+                        }),
+                        catchError(() => {
+                            $error.prop("hidden", false);
+                            return EMPTY;
+                        }),
+                        finalize(() => {
+                            $loading.prop("hidden", true);
+                            $showMore.prop("disabled", false)
+                                .prop("hidden", page >= totalPages || !$error.prop("hidden"));
+                            $list.attr("aria-busy", "false");
+                        })
+                    );
+                })
+            );
+        })
+    ).subscribe();
 });
-
-showMore.addEventListener("click", () => void loadNextPage());
-retry.addEventListener("click", () => void loadNextPage());
-void loadNextPage();
