@@ -120,7 +120,7 @@ public class ProductRepository(AppDbContext context) : IProductRepository
             }
         }
 
-        query = query.OrderByDescending(x => x.Created);
+        query = query.OrderByDescending(x => x.Created).ThenBy(x => x.Id);
 
         var totalCount = await query.CountAsync(cancellationToken);
 
