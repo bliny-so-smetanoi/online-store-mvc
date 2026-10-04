@@ -2,6 +2,7 @@
 using Application.Dtos;
 using Application.Repositories.IProductRepository;
 using Application.UseCases.Products.Dtos;
+using Domain.Specifications.Product;
 
 namespace Application.UseCases.Products.Queries.GetProducts;
 
@@ -9,6 +10,6 @@ public class GetProductsQueryHandler(IProductRepository repository) : IQueryHand
 {
     public async Task<PagedResult<ProductDto>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
     {
-        return await repository.GetAllPagedAsync(request.Filter, cancellationToken);
+        return await repository.GetAllPagedAsync(request.Filter, ProductSpecification.All(), cancellationToken);
     }
 }

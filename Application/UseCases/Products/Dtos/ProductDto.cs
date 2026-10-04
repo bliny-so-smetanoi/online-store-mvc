@@ -10,3 +10,9 @@ public class ProductDto
     public string Description { get; set; }
     public int Quantity { get; set; }
 }
+
+
+public class ProductWithImageDto : ProductDto
+{
+    public Guid? ImageId { get; set; }
+}

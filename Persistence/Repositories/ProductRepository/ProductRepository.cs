@@ -2,7 +2,9 @@ using System.Linq.Expressions;
 using Application.Dtos;
 using Application.Repositories.IProductRepository;
 using Application.UseCases.Products.Dtos;
+using Application.UseCases.Products.Queries.GetImageContent;
 using Domain.Entities.Products;
+using Domain.Specifications.Product;
 using Microsoft.EntityFrameworkCore;
 using NSpecifications;
 using Persistence.Context;
@@ -28,12 +30,12 @@ public class ProductRepository(AppDbContext context) : IProductRepository
         return await query.SingleOrDefaultAsync(spec, cancellationToken);
     }
 
-    public async Task<PagedResult<ProductDto>> GetAllPagedAsync(GetAllProductsFilterDto? options, CancellationToken cancellationToken = default)
+    public async Task<PagedResult<ProductDto>> GetAllPagedAsync(GetAllProductsFilterDto? options, ASpec<Product> spec, CancellationToken cancellationToken = default)
     {
         if (options.Page <= 0) options.Page = 1;
         if (options.PageSize <= 0) options.PageSize = 10;
 
-        var query = context.Set<Product>().AsQueryable();
+        var query = context.Set<Product>().Where(spec).AsQueryable();
 
         if (options is not null)
         {
@@ -86,6 +88,66 @@ public class ProductRepository(AppDbContext context) : IProductRepository
             PageSize = options.PageSize
         };
     }
+    
+    public async Task<PagedResult<ProductWithImageDto>> GetAllPagedWithImageAsync(GetAllProductsFilterDto? options, ASpec<Product> spec, CancellationToken cancellationToken = default)
+    {
+        if (options.Page <= 0) options.Page = 1;
+        if (options.PageSize <= 0) options.PageSize = 10;
+
+        var query = context.Set<Product>().Where(spec).AsQueryable();
+
+        if (options is not null)
+        {
+            if (!string.IsNullOrWhiteSpace(options.Name))
+            {
+                query = query.Where(t => t.Name.Contains(options.Name));
+            }
+
+            if (options.Id is not null)
+            {
+                query = query.Where(t => t.Id == options.Id.Value);
+            }
+
+            if (options.CategoryId is not null)
+            {
+                query = query.Where(t => t.CategoryId == options.CategoryId.Value);
+            }
+
+            if (options.Created is not null)
+            {
+                var date = options.Created.Value.Date;
+                query = query.Where(t => t.Created.Date == date);
+            }
+        }
+
+        query = query.OrderByDescending(x => x.Created);
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var items = await query
+            .Skip((options.Page - 1) * options.PageSize)
+            .Take(options.PageSize)
+            .Select(x => new ProductWithImageDto()
+            {
+                Id = x.Id,
+                CategoryId = x.CategoryId,
+                CategoryName = x.Category != null ? x.Category.Name : null,
+                Name = x.Name,
+                Description = x.Description,
+                Price = x.Price,
+                Quantity = x.Quantity,
+                ImageId = x.Images.FirstOrDefault() != null ? x.Images.FirstOrDefault().Id : null,
+            })
+            .ToListAsync(cancellationToken);
+
+        return new PagedResult<ProductWithImageDto>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            Page = options.Page,
+            PageSize = options.PageSize
+        };
+    }
 
 
     public async Task AddAsync(Product product, CancellationToken cancellationToken = default)
@@ -98,5 +160,11 @@ public class ProductRepository(AppDbContext context) : IProductRepository
     {
         context.Products.Update(product);
         await context.SaveChangesAsync(cancellationToken);
+    }
+    
+    public async Task<Image?> GetImageAsync(Guid imageId, CancellationToken cancellationToken = default)
+    {
+        return await context.Images.FirstOrDefaultAsync(x => x.Id == imageId,
+            cancellationToken: cancellationToken);
     }
 }

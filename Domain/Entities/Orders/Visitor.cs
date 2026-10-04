@@ -1,4 +1,5 @@
-﻿using Domain.SeedWork;
+﻿using Domain.Enums;
+using Domain.SeedWork;
 
 namespace Domain.Entities.Orders;
 
@@ -21,5 +22,10 @@ public class Visitor : AuditableEntity
     public static Visitor Create(string phone, string email)
     {
         return new Visitor(phone, email);
+    }
+
+    public Cart? GetActiveCart()
+    {
+        return Carts.SingleOrDefault(x => x.Status == CartStatus.Created);
     }
 }
