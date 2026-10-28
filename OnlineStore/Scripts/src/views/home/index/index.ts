@@ -7,6 +7,7 @@ import type {PagedResult} from "../../../shared/pagedTable";
 interface Product {
     id: string;
     name: string;
+    categoryName: string;
     description: string;
     price: number;
     imageId: string | null;
@@ -31,6 +32,7 @@ $(() => {
         products.forEach(product => {
             const $card = $($template.prop("content") as DocumentFragment).children().clone();
             $card.find("[data-product-name]").text(product.name);
+            $card.find("[data-category-name]").text(product.categoryName);
             $card.find("[data-product-description]").text(product.description.length > 250
                 ? `${product.description.slice(0, 249)}…`
                 : product.description);

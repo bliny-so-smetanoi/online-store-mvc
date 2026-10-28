@@ -136,7 +136,7 @@ public class ProductRepository(AppDbContext context) : IProductRepository
                 Description = x.Description,
                 Price = x.Price,
                 Quantity = x.Quantity,
-                ImageId = x.Images.FirstOrDefault() != null ? x.Images.FirstOrDefault().Id : null,
+                ImageId = x.Images.FirstOrDefault() != null ? x.Images.FirstOrDefault().Id : null
             })
             .ToListAsync(cancellationToken);
 
