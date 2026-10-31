@@ -3,6 +3,7 @@ using Application.Services.IVisitorService;
 using Application.Services.IVisitorService.Dtos;
 using Application.UseCases.Orders.Commands.RequestVisitorCode;
 using MediatR;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +15,13 @@ public class AccountController : Controller
 {
     private readonly IVisitorLoginService _visitorLoginService;
     private readonly IMediator _mediator;
+    private readonly IAntiforgery _antiforgery;
 
-    public AccountController(IVisitorLoginService visitorLoginService, IMediator mediator)
+    public AccountController(IVisitorLoginService visitorLoginService, IMediator mediator, IAntiforgery antiforgery)
     {
         _visitorLoginService = visitorLoginService;
         _mediator = mediator;
+        _antiforgery = antiforgery;
     }
 
     public IActionResult Login(string returnUrl = "/")
@@ -115,7 +118,11 @@ public class AccountController : Controller
             principal,
             authProperties);
 
-        return Ok();
+        // Antiforgery-токен привязан к пользователю: выдаём новый, иначе следующие POST после входа получат 400
+        HttpContext.User = principal;
+        var tokens = _antiforgery.GetAndStoreTokens(HttpContext);
+
+        return Ok(new { requestToken = tokens.RequestToken });
     }
 
 }

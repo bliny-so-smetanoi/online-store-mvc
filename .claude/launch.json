@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "OnlineStore",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "OnlineStore/OnlineStore.csproj", "--no-build", "--launch-profile", "http"],
+      "port": 5000
+    }
+  ]
+}

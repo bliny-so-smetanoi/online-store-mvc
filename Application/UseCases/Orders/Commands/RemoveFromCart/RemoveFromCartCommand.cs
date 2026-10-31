@@ -35,7 +35,12 @@ public class RemoveFromCartCommandValidator(
         {
             return Result.Failure("Cart not found");
         }
-        
+
+        if (activeCartExists.GetProductQuantity(request.ProductId) == 0)
+        {
+            return Result.Failure("Product not found in cart");
+        }
+
         return Result.Success();
     }
 }

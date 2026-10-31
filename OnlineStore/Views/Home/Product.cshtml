@@ -1,11 +1,16 @@
 ﻿@using System.Globalization
+@using Resource
 @model Application.UseCases.Products.Dtos.ProductDetailsDto
 @{
     ViewData["Title"] = Model.Name;
     var imageUrls = Model.ImageIds.Select(id => Url.Action("ProductImage", "Home", new { id })).ToList();
 }
 
-<div class="container mt-4" id="product-details">
+<div class="container mt-4" id="product-details"
+     data-add-to-cart-url="@Url.Action("AddToCart", "Home")"
+     data-cart-title="@CatalogResources.Get("MyCart")"
+     data-added-message="@CatalogResources.Get("AddedToCart")"
+     data-error-title="@SharedResources.Error">
     <a asp-action="Index" asp-controller="Home" class="link-secondary text-decoration-none">
         <i class="bi-arrow-left"></i> Back to catalog
     </a>
@@ -53,7 +58,8 @@
             <div>
                 <button type="button" class="btn btn-primary" id="product-add-to-cart" data-product-id="@Model.Id"
                         disabled="@(Model.Quantity <= 0)">
-                    <i class="bi-cart-plus"></i> Add to cart
+                    <span class="spinner-border spinner-border-sm me-1" aria-hidden="true" hidden></span>
+                    <i class="bi-cart-plus"></i> @CatalogResources.Get("AddToCart")
                 </button>
             </div>
         </div>

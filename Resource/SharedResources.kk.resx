@@ -88,4 +88,19 @@
     <data name="VisitorPhoneInvalid" xml:space="preserve"><value>Дұрыс телефон нөмірін енгізіңіз.</value></data>
     <data name="VisitorCodeRequestTooOften" xml:space="preserve"><value>Код жақында жіберілді. Жаңа кодты сұрамас бұрын бір минут күтіңіз.</value></data>
     <data name="VisitorCodeInvalid" xml:space="preserve"><value>Код қате немесе мерзімі өтіп кеткен.</value></data>
+    <data name="MyCart" xml:space="preserve"><value>Менің себетім</value></data>
+    <data name="CartCustomer" xml:space="preserve"><value>Сатып алушы</value></data>
+    <data name="CustomerSince" xml:space="preserve"><value>Тіркелген күні</value></data>
+    <data name="Email" xml:space="preserve"><value>Email</value></data>
+    <data name="CartItemsCount" xml:space="preserve"><value>Себеттегі тауарлар</value></data>
+    <data name="CartTotal" xml:space="preserve"><value>Барлығы</value></data>
+    <data name="CartEmpty" xml:space="preserve"><value>Себетіңіз бос.</value></data>
+    <data name="ContinueShopping" xml:space="preserve"><value>Сатып алуды жалғастыру</value></data>
+    <data name="AddToCart" xml:space="preserve"><value>Себетке қосу</value></data>
+    <data name="AddedToCart" xml:space="preserve"><value>Тауар себетке қосылды.</value></data>
+    <data name="RemoveFromCart" xml:space="preserve"><value>Жою</value></data>
+    <data name="RemovedFromCart" xml:space="preserve"><value>Тауар себеттен жойылды.</value></data>
+    <data name="Quantity" xml:space="preserve"><value>Саны</value></data>
+    <data name="Price" xml:space="preserve"><value>Бағасы</value></data>
+    <data name="VisitorNotAuthenticated" xml:space="preserve"><value>Себетті пайдалану үшін телефон нөмірі арқылы кіріңіз.</value></data>
 </root>

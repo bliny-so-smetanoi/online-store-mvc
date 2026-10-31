@@ -12,4 +12,7 @@ public sealed class KeycloakProvisioningOptions
     public string UserTokenClientSecret { get; set; } = default!;
 
     public string VisitorRealmRole { get; set; } = "visitor";
+
+    // User Profile Keycloak требует email; визитор входит по телефону, поэтому без своего email получает технический
+    public string VisitorEmailDomain { get; set; } = "visitors.onlinestore.local";
 }

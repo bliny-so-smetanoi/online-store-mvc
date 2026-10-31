@@ -30,9 +30,16 @@ public class AddToCartCommandValidator(
 
         if (visitorExists is null)
         {
-            return Result.Failure("Visitor not found"); 
+            return Result.Failure("Visitor not found");
         }
-        
+
+        var quantityInCart = visitorExists.GetActiveCart()?.GetProductQuantity(request.ProductId) ?? 0;
+
+        if (productExists.Quantity <= quantityInCart)
+        {
+            return Result.Failure("Not enough product in stock");
+        }
+
         return Result.Success();
     }
 }

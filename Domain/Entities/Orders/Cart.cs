@@ -25,17 +25,31 @@ public class Cart : AuditableEntity
 
     public void AddProduct(Product product)
     {
-        var productInCart = ProductInCart.Create(product, this, 1);
-        Products.Add(productInCart);
+        var productInCart = Products.FirstOrDefault(x => x.Product.Id == product.Id);
+        if (productInCart is null)
+        {
+            Products.Add(ProductInCart.Create(product, this, 1));
+        }
+        else
+        {
+            productInCart.IncreaseQuantity(1);
+        }
+        MakeModified();
+    }
+
+    public int GetProductQuantity(Guid productId)
+    {
+        return Products.Where(x => x.Product.Id == productId).Sum(x => x.Quantity);
     }
 
     public void RemoveProduct(Product product)
     {
-        var productForRemove = Products.FirstOrDefault(x => x.Id == product.Id);
-        if (productForRemove is null) 
+        var productForRemove = Products.FirstOrDefault(x => x.Product.Id == product.Id);
+        if (productForRemove is null)
         {
             throw new Exception($"Product with id {product.Id} not found");
         }
         Products.Remove(productForRemove);
+        MakeModified();
     }
 }

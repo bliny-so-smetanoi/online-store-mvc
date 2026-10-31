@@ -90,6 +90,25 @@ public sealed class KeycloakAdminClient : IKeycloakAdminClient
         return location.Split('/', StringSplitOptions.RemoveEmptyEntries).Last();
     }
 
+    public async Task UpdateUserAsync(
+        string adminToken,
+        string userId,
+        KeycloakUserRepresentation user,
+        CancellationToken cancellationToken)
+    {
+        var url = $"{_options.BaseUrl}/admin/realms/{_options.Realm}/users/{userId}";
+
+        using var request = new HttpRequestMessage(HttpMethod.Put, url);
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", adminToken);
+        request.Content = new StringContent(
+            JsonSerializer.Serialize(user, JsonOptions),
+            Encoding.UTF8,
+            "application/json");
+
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+        response.EnsureSuccessStatusCode();
+    }
+
     public async Task ResetPasswordAsync(
         string adminToken,
         string userId,

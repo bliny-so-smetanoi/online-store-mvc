@@ -46,6 +46,7 @@ public sealed class VisitorLoginService : IVisitorLoginService
 
         string keycloakUserId;
         var password = GenerateStrongPassword();
+        var email = localUser.Email ?? $"{localUser.UserName}@{_options.VisitorEmailDomain}";
 
         if (existingUser is null)
         {
@@ -56,7 +57,7 @@ public sealed class VisitorLoginService : IVisitorLoginService
                     Username = localUser.UserName,
                     Enabled = true,
                     EmailVerified = true,
-                    Email = localUser.Email,
+                    Email = email,
                     FirstName = localUser.FirstName,
                     LastName = localUser.LastName,
                     Attributes = new Dictionary<string, List<string>>
@@ -89,6 +90,18 @@ public sealed class VisitorLoginService : IVisitorLoginService
         {
             keycloakUserId = existingUser.Id
                              ?? throw new InvalidOperationException("Existing Keycloak user has no id.");
+
+            // Пользователи, созданные без email, иначе не проходят вход: Keycloak требует дозаполнить профиль
+            if (string.IsNullOrEmpty(existingUser.Email))
+            {
+                existingUser.Email = email;
+                existingUser.EmailVerified = true;
+                await _keycloakAdminClient.UpdateUserAsync(
+                    adminToken,
+                    keycloakUserId,
+                    existingUser,
+                    cancellationToken);
+            }
 
             await _keycloakAdminClient.ResetPasswordAsync(
                 adminToken,

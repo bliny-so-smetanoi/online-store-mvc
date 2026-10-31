@@ -17,7 +17,8 @@ public class VisitorRepository(AppDbContext context) : IVisitorRepository
     {
         return await context.Visitors.Include(x => x.Carts)
             .ThenInclude(x => x.Products)
-            .SingleOrDefaultAsync(x => x.Id == id,
+            .ThenInclude(x => x.Product)
+            .SingleOrDefaultAsync(x => x.Id == id && !x.IsDeleted,
                 cancellationToken);
     }
 

@@ -19,7 +19,7 @@ public class ValidationPipelineBehavior<TRequest, TResponse> : IPipelineBehavior
 
             var requestValidateResult = await validator.RequestValidateAsync(request, cancellationToken);
             if (requestValidateResult.IsFailure) {
-                throw new ApplicationException(validateFluentRulesResult.Error);
+                throw new ApplicationException(requestValidateResult.Error);
             }
         }
 

@@ -22,4 +22,10 @@ public class ProductInCart : AuditableEntity
     {
         return new ProductInCart(product, cart, quantity);
     }
+
+    public void IncreaseQuantity(int quantity)
+    {
+        Quantity += quantity;
+        MakeModified();
+    }
 }

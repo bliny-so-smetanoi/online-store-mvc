@@ -1,5 +1,91 @@
-﻿<div class="container">
-    <h2 class="h2">
-        In development stage...
-    </h2>
+﻿@using System.Globalization
+@using Resource
+@model Application.UseCases.Orders.Dtos.VisitorCartDto
+@{
+    ViewData["Title"] = CatalogResources.Get("MyCart");
+    var priceCulture = CultureInfo.GetCultureInfo("en-US");
+}
+
+<div class="container mt-4" id="visitor-cart"
+     data-remove-url="@Url.Action("RemoveFromCart", "Home")"
+     data-title="@CatalogResources.Get("MyCart")"
+     data-removed-message="@CatalogResources.Get("RemovedFromCart")"
+     data-error-title="@SharedResources.Error">
+    <h1 class="h2 mb-4"><i class="bi-cart"></i> @CatalogResources.Get("MyCart")</h1>
+
+    <section class="card mb-4" aria-labelledby="cart-customer-title">
+        <div class="card-body">
+            <h2 class="h5 card-title" id="cart-customer-title">
+                <i class="bi-person-circle"></i> @CatalogResources.Get("CartCustomer")
+            </h2>
+            <dl class="row mb-0">
+                <dt class="col-sm-4 col-lg-3">@CatalogResources.Get("Phone")</dt>
+                <dd class="col-sm-8 col-lg-9">+@Model.Phone</dd>
+
+                @if (!string.IsNullOrEmpty(Model.Email))
+                {
+                    <dt class="col-sm-4 col-lg-3">@CatalogResources.Get("Email")</dt>
+                    <dd class="col-sm-8 col-lg-9">@Model.Email</dd>
+                }
+
+                <dt class="col-sm-4 col-lg-3">@CatalogResources.Get("CustomerSince")</dt>
+                <dd class="col-sm-8 col-lg-9">@Model.RegisteredAt.ToString("dd.MM.yyyy")</dd>
+
+                <dt class="col-sm-4 col-lg-3">@CatalogResources.Get("CartItemsCount")</dt>
+                <dd class="col-sm-8 col-lg-9" id="cart-total-quantity">@Model.TotalQuantity</dd>
+
+                <dt class="col-sm-4 col-lg-3">@CatalogResources.Get("CartTotal")</dt>
+                <dd class="col-sm-8 col-lg-9 fw-bold mb-0" id="cart-total-price">@Model.TotalPrice.ToString("N2", priceCulture)</dd>
+            </dl>
+        </div>
+    </section>
+
+    <section aria-label="@CatalogResources.Get("MyCart")">
+        <div id="cart-items" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var item in Model.Items)
+            {
+                <div class="col" data-cart-item data-product-id="@item.ProductId"
+                     data-quantity="@item.Quantity" data-price="@item.Price.ToString(CultureInfo.InvariantCulture)">
+                    <article class="card h-100">
+                        @if (item.ImageId is not null)
+                        {
+                            <img class="card-img-top object-fit-contain" height="220" loading="lazy" alt="@item.Name"
+                                 src="@Url.Action("ProductImage", "Home", new { id = item.ImageId })">
+                        }
+                        <div class="bg-light text-secondary text-center p-5" data-product-no-image
+                             hidden="@(item.ImageId is not null)">No image available</div>
+                        <div class="card-body d-flex flex-column">
+                            <h2 class="card-title h5">
+                                <a class="link-body-emphasis text-decoration-none"
+                                   asp-action="Product" asp-controller="Home" asp-route-id="@item.ProductId">@item.Name</a>
+                            </h2>
+                            @if (!string.IsNullOrEmpty(item.CategoryName))
+                            {
+                                <h3 class="card-title h6 text-secondary">@item.CategoryName</h3>
+                            }
+                            <p class="card-text mb-1">@CatalogResources.Get("Price"): @item.Price.ToString("N2", priceCulture)</p>
+                            <p class="card-text mb-1">@CatalogResources.Get("Quantity"): @item.Quantity</p>
+                            <p class="card-text fw-bold mt-auto">@CatalogResources.Get("CartTotal"): @item.TotalPrice.ToString("N2", priceCulture)</p>
+                            <div>
+                                <button type="button" class="btn btn-outline-danger btn-sm" data-cart-remove>
+                                    <span class="spinner-border spinner-border-sm me-1" aria-hidden="true" hidden></span>
+                                    <i class="bi-trash"></i> @CatalogResources.Get("RemoveFromCart")
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            }
+        </div>
+
+        <div id="cart-empty" class="text-center mt-4" role="status" hidden="@(Model.Items.Count > 0)">
+            <p>@CatalogResources.Get("CartEmpty")</p>
+            <a class="btn btn-primary" asp-action="Index" asp-controller="Home">@CatalogResources.Get("ContinueShopping")</a>
+        </div>
+    </section>
 </div>
+
+@section Scripts
+{
+    <script src="~/js/src/views/home/cart/index.bundle.js" asp-append-version="true"></script>
+}

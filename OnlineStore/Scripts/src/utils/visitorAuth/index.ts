@@ -6,6 +6,7 @@ import {catchError, exhaustMap, finalize, map, take, takeUntil, tap} from "rxjs/
 import {t} from "../localization";
 
 type Step = "phone" | "code";
+type LoginResult = { step: "code" } | { step: "done", requestToken?: string };
 
 declare global {
     interface Window {
@@ -44,7 +45,15 @@ export function initVisitorAuth() {
     });
 }
 
-function markAuthenticated() {
+// Antiforgery-токен из формы входа в _Layout; после входа сервер выдаёт новый (он привязан к пользователю)
+export function getRequestToken(): string {
+    return String($("#visitor-login-form input[name='__RequestVerificationToken']").val() ?? "");
+}
+
+function markAuthenticated(requestToken: string | undefined) {
+    if (requestToken) {
+        $("#visitor-login-form input[name='__RequestVerificationToken']").val(requestToken);
+    }
     document.body.dataset.authenticated = "true";
     $("#visitor-login-item").prop("hidden", true);
     $("#visitor-logout-item").prop("hidden", false);
@@ -86,7 +95,7 @@ function openLoginModal(): Promise<boolean> {
             $submit.find(".spinner-border").prop("hidden", !busy);
         }
 
-        function post(url: string, body: unknown): Observable<void> {
+        function post<T>(url: string, body: unknown): Observable<T | undefined> {
             return fromFetch(url, {
                 method: "POST",
                 headers: {
@@ -98,6 +107,9 @@ function openLoginModal(): Promise<boolean> {
                     if (!response.ok) {
                         throw new Error(await response.text());
                     }
+                    return response.headers.get("content-type")?.includes("application/json")
+                        ? await response.json() as T
+                        : undefined;
                 }
             });
         }
@@ -108,8 +120,9 @@ function openLoginModal(): Promise<boolean> {
                 const phone = String($phone.val() ?? "").trim();
                 const code = String($code.val() ?? "").trim();
                 const request$ = step === "phone"
-                    ? post($modal.data("request-code-url"), {phone}).pipe(map((): Step | "done" => "code"))
-                    : post($modal.data("login-url"), {phone, code}).pipe(map((): Step | "done" => "done"));
+                    ? post($modal.data("request-code-url"), {phone}).pipe(map((): LoginResult => ({step: "code"})))
+                    : post<{requestToken?: string}>($modal.data("login-url"), {phone, code}).pipe(
+                        map((response): LoginResult => ({step: "done", requestToken: response?.requestToken})));
 
                 setBusy(true);
                 return request$.pipe(
@@ -122,13 +135,13 @@ function openLoginModal(): Promise<boolean> {
             }),
             takeUntil(hidden$)
         ).subscribe(result => {
-            if (result === "code") {
+            if (result.step === "code") {
                 setStep("code");
                 return;
             }
 
             authenticated = true;
-            markAuthenticated();
+            markAuthenticated(result.requestToken);
             bsModal.hide();
         });
 

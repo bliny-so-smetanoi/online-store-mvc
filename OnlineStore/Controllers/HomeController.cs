@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Security.Claims;
 using Application.Repositories;
 using Application.Repositories.ITodoItemRepository;
 using Application.Repositories.ITodoItemRepository.Dtos;
@@ -9,6 +10,10 @@ using Application.UseCases.Products.Dtos;
 using Application.UseCases.Products.Queries.GetProductsVisitor;
 using Application.UseCases.Products.Queries.GetImageContent;
 using Application.UseCases.Products.Queries.GetProductDetails;
+using Application.UseCases.Orders.Commands.AddToCart;
+using Application.UseCases.Orders.Commands.RemoveFromCart;
+using Application.UseCases.Orders.Dtos;
+using Application.UseCases.Orders.Queries.GetVisitorCart;
 using KeycloakExtension;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
@@ -87,13 +92,63 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult Cart()
+    [HttpGet]
+    public async Task<IActionResult> Cart(CancellationToken cancellationToken)
     {
-        return View();
+        var visitorId = GetVisitorId();
+        if (visitorId is null)
+            return RedirectToAction(nameof(Index));
+
+        var result = await _mediator.Send(new GetVisitorCartQuery(visitorId.Value), cancellationToken);
+        if (result.IsFailure)
+            return RedirectToAction(nameof(Index));
+
+        return View(result.Value);
     }
-    
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddToCart([FromBody] CartProductVm model, CancellationToken cancellationToken)
+    {
+        var visitorId = GetVisitorId();
+        if (visitorId is null)
+            return Unauthorized(CatalogResources.Get("VisitorNotAuthenticated"));
+
+        var result = await _mediator.Send(new AddToCartCommand(model.ProductId, visitorId.Value), cancellationToken);
+        if (result.IsFailure)
+            return BadRequest(result.Error);
+
+        return Ok();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RemoveFromCart([FromBody] CartProductVm model, CancellationToken cancellationToken)
+    {
+        var visitorId = GetVisitorId();
+        if (visitorId is null)
+            return Unauthorized(CatalogResources.Get("VisitorNotAuthenticated"));
+
+        var result = await _mediator.Send(new RemoveFromCartCommand(model.ProductId, visitorId.Value), cancellationToken);
+        if (result.IsFailure)
+            return BadRequest(result.Error);
+
+        return Ok();
+    }
+
     public IActionResult Forbidden()
     {
         return View();
+    }
+
+    // Корзина доступна только визитору: его id лежит в NameIdentifier (см. AccountController.VisitorLogin)
+    private Guid? GetVisitorId()
+    {
+        if (User.FindFirst("auth_source")?.Value != "visitor")
+            return null;
+
+        return Guid.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var visitorId)
+            ? visitorId
+            : null;
     }
 }
