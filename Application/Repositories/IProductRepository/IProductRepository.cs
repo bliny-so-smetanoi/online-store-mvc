@@ -28,6 +28,9 @@ public interface IProductRepository
         ASpec<Product> spec,
         CancellationToken cancellationToken = default);
 
+    Task<ProductDetailsDto?> GetDetailsAsync(ASpec<Product> spec,
+        CancellationToken cancellationToken = default);
+
     Task<Image?> GetImageAsync(Guid imageId,
         CancellationToken cancellationToken = default);
 }

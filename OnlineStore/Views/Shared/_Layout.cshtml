@@ -31,6 +31,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="About">@SharedResources.AboutViewTitle</a>
                         </li>
+                        <li class="nav-item" id="visitor-cart-nav" hidden="@(!isAuthenticated)">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Cart"> <i class="bi-cart text-light"></i> My cart</a>
+                        </li>
                         
                     </div>
                     

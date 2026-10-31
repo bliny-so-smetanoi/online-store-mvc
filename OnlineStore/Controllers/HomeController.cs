@@ -8,6 +8,7 @@ using Application.UseCases.TodoItem.Queries.GetAll;
 using Application.UseCases.Products.Dtos;
 using Application.UseCases.Products.Queries.GetProductsVisitor;
 using Application.UseCases.Products.Queries.GetImageContent;
+using Application.UseCases.Products.Queries.GetProductDetails;
 using KeycloakExtension;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
@@ -56,6 +57,16 @@ public class HomeController : Controller
     }
 
     [HttpGet]
+    public async Task<IActionResult> Product(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new GetProductDetailsQuery(id), cancellationToken);
+        if (result.IsFailure)
+            return NotFound();
+
+        return View(result.Value);
+    }
+
+    [HttpGet]
     public async Task<IActionResult> ProductImage(Guid id, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new GetImageContentQuery(id), cancellationToken);
@@ -73,6 +84,11 @@ public class HomeController : Controller
     public IActionResult About()
     {
         var test = User.Identities;
+        return View();
+    }
+
+    public IActionResult Cart()
+    {
         return View();
     }
     

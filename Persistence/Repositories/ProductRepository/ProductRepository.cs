@@ -162,6 +162,24 @@ public class ProductRepository(AppDbContext context) : IProductRepository
         await context.SaveChangesAsync(cancellationToken);
     }
     
+    public async Task<ProductDetailsDto?> GetDetailsAsync(ASpec<Product> spec, CancellationToken cancellationToken = default)
+    {
+        return await context.Products
+            .Where(spec)
+            .Select(x => new ProductDetailsDto()
+            {
+                Id = x.Id,
+                CategoryId = x.CategoryId,
+                CategoryName = x.Category != null ? x.Category.Name : null,
+                Name = x.Name,
+                Description = x.Description,
+                Price = x.Price,
+                Quantity = x.Quantity,
+                ImageIds = x.Images.OrderBy(i => i.Created).ThenBy(i => i.Id).Select(i => i.Id).ToList()
+            })
+            .SingleOrDefaultAsync(cancellationToken);
+    }
+
     public async Task<Image?> GetImageAsync(Guid imageId, CancellationToken cancellationToken = default)
     {
         return await context.Images.FirstOrDefaultAsync(x => x.Id == imageId,

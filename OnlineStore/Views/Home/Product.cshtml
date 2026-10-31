@@ -1,0 +1,66 @@
+﻿@using System.Globalization
+@model Application.UseCases.Products.Dtos.ProductDetailsDto
+@{
+    ViewData["Title"] = Model.Name;
+    var imageUrls = Model.ImageIds.Select(id => Url.Action("ProductImage", "Home", new { id })).ToList();
+}
+
+<div class="container mt-4" id="product-details">
+    <a asp-action="Index" asp-controller="Home" class="link-secondary text-decoration-none">
+        <i class="bi-arrow-left"></i> Back to catalog
+    </a>
+
+    <div class="row g-4 mt-1">
+        <div class="col-md-6">
+            @if (imageUrls.Count > 0)
+            {
+                <img id="product-main-image" src="@imageUrls[0]" alt="@Model.Name"
+                     class="img-fluid rounded border w-100 object-fit-contain" style="height: 420px">
+            }
+            <div id="product-no-image" class="bg-light text-secondary text-center rounded border p-5"
+                 hidden="@(imageUrls.Count > 0)">No image available</div>
+
+            @if (imageUrls.Count > 1)
+            {
+                <div class="d-flex flex-wrap gap-2 mt-3" id="product-thumbnails">
+                    @for (var i = 0; i < imageUrls.Count; i++)
+                    {
+                        <button type="button" class="btn p-0 border rounded @(i == 0 ? "border-primary" : "")"
+                                data-image-url="@imageUrls[i]" aria-label="Image @(i + 1)" aria-pressed="@(i == 0 ? "true" : "false")">
+                            <img src="@imageUrls[i]" alt="" class="rounded object-fit-cover" width="72" height="72" loading="lazy">
+                        </button>
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="col-md-6 d-flex flex-column">
+            <h1 class="h2">@Model.Name</h1>
+            @if (!string.IsNullOrEmpty(Model.CategoryName))
+            {
+                <p class="text-secondary">@Model.CategoryName</p>
+            }
+            <p style="white-space: pre-line">@Model.Description</p>
+            <p class="fs-4 fw-bold mb-1">Price: @Model.Price.ToString("N2", CultureInfo.GetCultureInfo("en-US"))</p>
+            @if (Model.Quantity > 0)
+            {
+                <p class="text-success">In stock: @Model.Quantity</p>
+            }
+            else
+            {
+                <p class="text-danger">Out of stock</p>
+            }
+            <div>
+                <button type="button" class="btn btn-primary" id="product-add-to-cart" data-product-id="@Model.Id"
+                        disabled="@(Model.Quantity <= 0)">
+                    <i class="bi-cart-plus"></i> Add to cart
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="~/js/src/views/home/product/index.bundle.js" asp-append-version="true"></script>
+}

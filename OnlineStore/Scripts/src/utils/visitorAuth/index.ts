@@ -48,6 +48,7 @@ function markAuthenticated() {
     document.body.dataset.authenticated = "true";
     $("#visitor-login-item").prop("hidden", true);
     $("#visitor-logout-item").prop("hidden", false);
+    $("#visitor-cart-nav").prop("hidden", false);
 }
 
 function openLoginModal(): Promise<boolean> {

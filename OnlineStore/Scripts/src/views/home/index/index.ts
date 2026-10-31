@@ -31,13 +31,15 @@ $(() => {
 
         products.forEach(product => {
             const $card = $($template.prop("content") as DocumentFragment).children().clone();
-            $card.find("[data-product-name]").text(product.name);
+            const productUrl = new URL($catalog.data("product-url"), window.location.href);
+            productUrl.searchParams.set("id", product.id);
+            $card.find("[data-product-name]").text(product.name).attr("href", productUrl.toString());
             $card.find("[data-category-name]").text(product.categoryName);
             $card.find("[data-product-description]").text(product.description.length > 250
                 ? `${product.description.slice(0, 249)}…`
                 : product.description);
             $card.find("[data-product-price]").text(priceFormat.format(product.price));
-
+            
             if (product.imageId) {
                 const $image = $card.find("img");
                 const $placeholder = $card.find("[data-product-no-image]");

@@ -28,7 +28,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Scripts\src\views\home\" />
       <Folder Include="wwwroot\js\src\" />
     </ItemGroup>
 
