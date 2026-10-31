@@ -21,27 +21,43 @@
             </button>
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">@SharedResources.HomePage</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="About">@SharedResources.AboutViewTitle</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi-globe"></i> @SharedResources.CurrentLanguage
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-dark">
-                            <li><a class="dropdown-item" asp-controller="Culture" asp-action="ChangeLanguage" asp-route-locale="kk"><img src="https://flagcdn.com/kz.svg" width="40" alt="UK Flag"> Qazaqsha</a></li>
-                            <li><a class="dropdown-item" asp-controller="Culture" asp-action="ChangeLanguage" asp-route-locale="en"><img src="https://flagcdn.com/gb.svg" width="40" alt="UK Flag"> English</a></li>
-                        </ul>
-                    </li>
-                    @if (User.Identity.IsAuthenticated)
-                    {
+                    <div class="container-fluid d-sm-inline-flex">
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-controller="Account" asp-action="Logout"> <i class="bi-person-fill-slash"></i> @SharedResources.Logout</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">@SharedResources.HomePage</a>
                         </li>
-                    }
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="About">@SharedResources.AboutViewTitle</a>
+                        </li>
+                        
+                    </div>
+                    
+                    <div class="container-fluid d-sm-inline-flex justify-content-end align-items-center">
+                        <li class="nav-item dropdown">
+                            <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi-globe"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-dark">
+                                <li><a class="dropdown-item" asp-controller="Culture" asp-action="ChangeLanguage" asp-route-locale="kk"><img src="https://flagcdn.com/kz.svg" width="40" alt="UK Flag"> Qazaqsha</a></li>
+                                <li><a class="dropdown-item" asp-controller="Culture" asp-action="ChangeLanguage" asp-route-locale="en"><img src="https://flagcdn.com/gb.svg" width="40" alt="UK Flag"> English</a></li>
+                            </ul>
+                        </li>
+                        
+                        <li class="nav-item d-flex align-items-center gap-2 ms-2">
+                            <i id="dark-theme-off" class="bi-sun-fill text-light"></i>
+                            <i id="dark-theme-on" class="bi-moon-fill text-light"></i>
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" role="switch" id="dark-theme-checkbox">
+                            </div>
+                        </li>
+                        
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-controller="Account" asp-action="Logout"> <i class="bi-person-fill-slash"></i> @SharedResources.Logout</a>
+                            </li>
+                        }
+                        
+                    </div>
                 </ul>
             </div>
         </div>

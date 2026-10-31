@@ -2,10 +2,10 @@
 import 'bootstrap';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap/dist/css/bootstrap.css';
-
 // Custom CSS imports
 import './index.scss';
 import {loadResources} from "./utils/localization";
+import {initDarkTheme} from "./utils/dark-theme";
 
 loadResources()
-
+initDarkTheme()
