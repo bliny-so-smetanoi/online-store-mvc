@@ -21,6 +21,13 @@ public class VisitorRepository(AppDbContext context) : IVisitorRepository
                 cancellationToken);
     }
 
+    public async Task<Visitor?> GetByPhoneAsync(string phone, CancellationToken cancellationToken)
+    {
+        return await context.Visitors.Include(x => x.AuthenticationCodes.Where(c => !c.IsDeleted))
+            .SingleOrDefaultAsync(x => x.Phone == phone && !x.IsDeleted,
+                cancellationToken);
+    }
+
     public async Task<List<Visitor>> GetAllAsync(CancellationToken cancellationToken)
     {
         return await context.Visitors.AsNoTracking().ToListAsync(cancellationToken);

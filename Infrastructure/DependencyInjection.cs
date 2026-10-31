@@ -16,7 +16,8 @@ public static class DependencyInjection
     private static void AddServices(this IServiceCollection services)
     {
         services.AddScoped<ITodoItemService, TodoItemService>();
-        services.AddScoped<ILocalVisitorAuthService, FakeLocalVisitorAuthService>();
+        services.AddScoped<ILocalVisitorAuthService, LocalVisitorAuthService>();
+        services.AddScoped<IVisitorCodeSender, LoggingVisitorCodeSender>();
         services.AddScoped<IVisitorLoginService, VisitorLoginService>();
     }
 }

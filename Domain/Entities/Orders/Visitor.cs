@@ -26,8 +26,23 @@ public class Visitor : AuditableEntity
         return new Visitor(phone, email);
     }
 
+    public static string NormalizePhone(string phone)
+    {
+        return new string(phone.Where(char.IsDigit).ToArray());
+    }
+
     public Cart? GetActiveCart()
     {
         return Carts.SingleOrDefault(x => x.Status == CartStatus.Created);
+    }
+
+    public VisitorAuthenticationCode AddAuthenticationCode(string code)
+    {
+        foreach (var authenticationCode in AuthenticationCodes.Where(x => !x.IsDeleted))
+            authenticationCode.Delete();
+
+        var newCode = VisitorAuthenticationCode.Create(this, code);
+        AuthenticationCodes.Add(newCode);
+        return newCode;
     }
 }

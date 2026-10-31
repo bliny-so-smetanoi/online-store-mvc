@@ -78,4 +78,14 @@
     <data name="ParentCategory" xml:space="preserve"><value>Parent category</value></data>
     <data name="SaveCategory" xml:space="preserve"><value>Save</value></data>
     <data name="AllCategories" xml:space="preserve"><value>All categories</value></data>
+    <data name="Login" xml:space="preserve"><value>Sign in</value></data>
+    <data name="VisitorLoginHint" xml:space="preserve"><value>Enter your phone number and we will send you a one-time code.</value></data>
+    <data name="Phone" xml:space="preserve"><value>Phone number</value></data>
+    <data name="VerificationCode" xml:space="preserve"><value>Code</value></data>
+    <data name="VisitorCodeSent" xml:space="preserve"><value>We sent a 6-digit code to this number.</value></data>
+    <data name="ChangePhone" xml:space="preserve"><value>Change number</value></data>
+    <data name="GetCode" xml:space="preserve"><value>Get code</value></data>
+    <data name="VisitorPhoneInvalid" xml:space="preserve"><value>Enter a valid phone number.</value></data>
+    <data name="VisitorCodeRequestTooOften" xml:space="preserve"><value>A code was sent recently. Wait a minute before requesting a new one.</value></data>
+    <data name="VisitorCodeInvalid" xml:space="preserve"><value>The code is invalid or has expired.</value></data>
 </root>

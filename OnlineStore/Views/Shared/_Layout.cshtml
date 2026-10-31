@@ -1,6 +1,9 @@
 @using KeycloakExtension
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using Resource
+@{
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,8 +12,8 @@
     <title>@ViewData["Title"] - OnlineStore</title>
     <script src="~/js/src/index.bundle.js"></script>
     <link rel="stylesheet" href="~/js/src/index.css">
-</head> 
-<body>
+</head>
+<body data-authenticated="@(isAuthenticated ? "true" : "false")">
 <header>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
         <div class="container-fluid">
@@ -41,7 +44,13 @@
                                 <li><a class="dropdown-item" asp-controller="Culture" asp-action="ChangeLanguage" asp-route-locale="en"><img src="https://flagcdn.com/gb.svg" width="40" alt="UK Flag"> English</a></li>
                             </ul>
                         </li>
-                        
+
+                        <li class="nav-item ms-2" id="visitor-login-item" hidden="@isAuthenticated">
+                            <button type="button" class="btn btn-outline-light btn-sm" id="visitor-login-button">
+                                <i class="bi-person-fill"></i> @CatalogResources.Get("Login")
+                            </button>
+                        </li>
+
                         <li class="nav-item d-flex align-items-center gap-2 ms-2">
                             <i id="dark-theme-off" class="bi-sun-fill text-light"></i>
                             <i id="dark-theme-on" class="bi-moon-fill text-light"></i>
@@ -50,12 +59,9 @@
                             </div>
                         </li>
                         
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-light" asp-controller="Account" asp-action="Logout"> <i class="bi-person-fill-slash"></i> @SharedResources.Logout</a>
-                            </li>
-                        }
+                        <li class="nav-item" id="visitor-logout-item" hidden="@(!isAuthenticated)">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="Logout"> <i class="bi-person-fill-slash"></i> @SharedResources.Logout</a>
+                        </li>
                         
                     </div>
                 </ul>
@@ -105,7 +111,46 @@
         </div>
     </div>
 </div>
- 
+
+<div class="modal fade" id="visitor-login-modal" tabindex="-1" aria-labelledby="visitor-login-title" aria-hidden="true"
+     data-request-code-url="@Url.Action("RequestVisitorCode", "Account", new { area = "" })"
+     data-login-url="@Url.Action("VisitorLogin", "Account", new { area = "" })">
+    <div class="modal-dialog modal-dialog-centered">
+        <form class="modal-content" id="visitor-login-form" novalidate>
+            @Html.AntiForgeryToken()
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="visitor-login-title">@CatalogResources.Get("Login")</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@SharedResources.Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-body-secondary small">@CatalogResources.Get("VisitorLoginHint")</p>
+                <div class="mb-3">
+                    <label for="visitor-login-phone" class="form-label">@CatalogResources.Get("Phone")</label>
+                    <input type="tel" class="form-control" id="visitor-login-phone" autocomplete="tel" placeholder="+7 700 000 00 00">
+                </div>
+                <div class="mb-3" id="visitor-login-code-group" hidden>
+                    <label for="visitor-login-code" class="form-label">@CatalogResources.Get("VerificationCode")</label>
+                    <input type="text" class="form-control" id="visitor-login-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
+                    <div class="form-text d-flex justify-content-between align-items-center">
+                        <span>@CatalogResources.Get("VisitorCodeSent")</span>
+                        <button type="button" class="btn btn-link btn-sm p-0" id="visitor-login-change-phone">@CatalogResources.Get("ChangePhone")</button>
+                    </div>
+                </div>
+                <div class="alert alert-danger py-2 small mb-0" id="visitor-login-error" role="alert" hidden></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@SharedResources.Close</button>
+                <button type="submit" class="btn btn-primary" id="visitor-login-submit"
+                        data-label-request="@CatalogResources.Get("GetCode")"
+                        data-label-login="@CatalogResources.Get("Login")">
+                    <span class="spinner-border spinner-border-sm me-1" aria-hidden="true" hidden></span>
+                    <span data-submit-label>@CatalogResources.Get("GetCode")</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

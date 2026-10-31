@@ -6,6 +6,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import './index.scss';
 import {loadResources} from "./utils/localization";
 import {initDarkTheme} from "./utils/dark-theme";
+import {initVisitorAuth} from "./utils/visitorAuth";
 
 loadResources()
 initDarkTheme()
+initVisitorAuth()

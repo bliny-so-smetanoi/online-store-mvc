@@ -78,4 +78,14 @@
     <data name="ParentCategory" xml:space="preserve"><value>Ата-ана санаты</value></data>
     <data name="SaveCategory" xml:space="preserve"><value>Сақтау</value></data>
     <data name="AllCategories" xml:space="preserve"><value>Барлық санаттар</value></data>
+    <data name="Login" xml:space="preserve"><value>Кіру</value></data>
+    <data name="VisitorLoginHint" xml:space="preserve"><value>Телефон нөміріңізді енгізіңіз, біз бір реттік код жібереміз.</value></data>
+    <data name="Phone" xml:space="preserve"><value>Телефон нөмірі</value></data>
+    <data name="VerificationCode" xml:space="preserve"><value>Код</value></data>
+    <data name="VisitorCodeSent" xml:space="preserve"><value>Осы нөмірге 6 таңбалы код жіберілді.</value></data>
+    <data name="ChangePhone" xml:space="preserve"><value>Нөмірді өзгерту</value></data>
+    <data name="GetCode" xml:space="preserve"><value>Код алу</value></data>
+    <data name="VisitorPhoneInvalid" xml:space="preserve"><value>Дұрыс телефон нөмірін енгізіңіз.</value></data>
+    <data name="VisitorCodeRequestTooOften" xml:space="preserve"><value>Код жақында жіберілді. Жаңа кодты сұрамас бұрын бір минут күтіңіз.</value></data>
+    <data name="VisitorCodeInvalid" xml:space="preserve"><value>Код қате немесе мерзімі өтіп кеткен.</value></data>
 </root>

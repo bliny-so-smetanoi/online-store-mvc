@@ -1,27 +1,32 @@
 using System.Security.Claims;
 using Application.Services.IVisitorService;
 using Application.Services.IVisitorService.Dtos;
+using Application.UseCases.Orders.Commands.RequestVisitorCode;
+using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Resource;
 
 namespace OnlineStore.Controllers;
 
 public class AccountController : Controller
 {
     private readonly IVisitorLoginService _visitorLoginService;
+    private readonly IMediator _mediator;
 
-    public AccountController(IVisitorLoginService visitorLoginService)
+    public AccountController(IVisitorLoginService visitorLoginService, IMediator mediator)
     {
         _visitorLoginService = visitorLoginService;
+        _mediator = mediator;
     }
 
     public IActionResult Login(string returnUrl = "/")
     {
-        return Challenge(new AuthenticationProperties { RedirectUri = returnUrl }, 
+        return Challenge(new AuthenticationProperties { RedirectUri = returnUrl },
             "oidc");
     }
-    
+
     public IActionResult Logout()
     {
         var authSource = User.FindFirst("auth_source")?.Value;
@@ -39,28 +44,35 @@ public class AccountController : Controller
             "oidc");
 
     }
-    
-    public IActionResult Visitor()
-    {
-        return View("VisitorLogin");
-    }
-    
+
     [HttpPost]
-    public async Task<IActionResult> VisitorLogin(VisitorLoginVm model)
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RequestVisitorCode([FromBody] VisitorCodeRequestVm model, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
-            return View(model);
+            return BadRequest(CatalogResources.Get("VisitorPhoneInvalid"));
+
+        var result = await _mediator.Send(new RequestVisitorCodeCommand(model.Phone), cancellationToken);
+        if (result.IsFailure)
+            return BadRequest(CatalogResources.Get(result.Error));
+
+        return Ok();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> VisitorLogin([FromBody] VisitorLoginVm model, CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(CatalogResources.Get("VisitorCodeInvalid"));
 
         var result = await _visitorLoginService.LoginAsync(
             model.Phone,
             model.Code,
-            HttpContext.RequestAborted);
+            cancellationToken);
 
         if (result is null)
-        {
-            ModelState.AddModelError(string.Empty, "Неверный код или пользователь не найден.");
-            return View(model);
-        }
+            return BadRequest(CatalogResources.Get("VisitorCodeInvalid"));
 
         var claims = new List<Claim>
         {
@@ -81,8 +93,7 @@ public class AccountController : Controller
 
         var authProperties = new AuthenticationProperties
         {
-            IsPersistent = true,
-            RedirectUri = "/" 
+            IsPersistent = true
         };
 
         authProperties.StoreTokens(new[]
@@ -104,7 +115,7 @@ public class AccountController : Controller
             principal,
             authProperties);
 
-        return LocalRedirect(authProperties.RedirectUri ?? "/");
+        return Ok();
     }
 
 }
