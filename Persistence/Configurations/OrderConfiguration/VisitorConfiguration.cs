@@ -13,5 +13,8 @@ public class VisitorConfiguration : AuditableEntityConfiguration<Visitor>
         builder.HasMany(x => x.Carts)
             .WithOne(x => x.Visitor)
             .OnDelete(DeleteBehavior.Cascade);
+        builder.HasMany(x => x.AuthenticationCodes)
+            .WithOne(x => x.Visitor)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

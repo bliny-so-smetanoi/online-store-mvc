@@ -15,6 +15,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Cart> Carts { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<Visitor>  Visitors { get; set; }
+    public DbSet<VisitorAuthenticationCode> VisitorAuthenticationCodes { get; set; }
     public DbSet<ProductInCart> ProductInCarts { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder) {

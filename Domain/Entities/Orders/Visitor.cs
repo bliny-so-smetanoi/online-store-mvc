@@ -9,6 +9,8 @@ public class Visitor : AuditableEntity
     public string Email { get; protected set; }
 
     public List<Cart> Carts { get; protected set; } = new();
+
+    public List<VisitorAuthenticationCode> AuthenticationCodes { get; protected set; } = new();
     
     protected  Visitor()
     {}

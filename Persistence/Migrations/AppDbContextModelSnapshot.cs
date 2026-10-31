@@ -151,6 +151,38 @@ namespace Persistence.Migrations
                     b.ToTable("Visitors", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.Orders.VisitorAuthenticationCode", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifyUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("VisitorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VisitorId");
+
+                    b.ToTable("VisitorAuthenticationCodes");
+                });
+
             modelBuilder.Entity("Domain.Entities.Products.Category", b =>
                 {
                     b.Property<Guid>("Id")
@@ -336,6 +368,17 @@ namespace Persistence.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Orders.VisitorAuthenticationCode", b =>
+                {
+                    b.HasOne("Domain.Entities.Orders.Visitor", "Visitor")
+                        .WithMany("AuthenticationCodes")
+                        .HasForeignKey("VisitorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Visitor");
+                });
+
             modelBuilder.Entity("Domain.Entities.Products.Category", b =>
                 {
                     b.HasOne("Domain.Entities.Products.Category", "Parent")
@@ -373,6 +416,8 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Orders.Visitor", b =>
                 {
+                    b.Navigation("AuthenticationCodes");
+
                     b.Navigation("Carts");
                 });
 
