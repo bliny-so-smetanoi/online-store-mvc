@@ -8,16 +8,12 @@
      data-product-url="@Url.Action("Product", "Home")">
     <h1 class="display-4 text-center">Welcome to OnlineStore</h1>
 
-    <form id="product-search" class="container-md mt-5" role="search">
-        <div class="row g-3">
-            <div class="col-8">
-                <label for="product-search-input" class="visually-hidden">Search products</label>
-                <input id="product-search-input" name="searchString" type="search" class="form-control"
-                       placeholder="Search for everything you desire...">
-            </div>
-            <div class="col-4">
-                <button type="submit" class="btn btn-primary"><i class="bi-search"></i></button>
-            </div>
+    <form id="product-search" class="container mt-5" role="search">
+        <label for="product-search-input" class="visually-hidden">Search products</label>
+        <div class="input-group">
+            <input id="product-search-input" name="searchString" type="search" class="form-control"
+                   placeholder="Search for everything you desire...">
+            <button type="submit" class="btn btn-primary" aria-label="Search"><i class="bi-search"></i></button>
         </div>
     </form>
 
