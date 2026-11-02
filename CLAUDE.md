@@ -26,6 +26,7 @@ There is no test project yet: `Tests/ShoppingTests/` contains only `bin/`/`obj/`
 
 ## Frontend build specifics
 
-- `webpack.config.js` turns **every** `.ts` file under `Scripts/src/` into its own entry, output to `wwwroot/js/src/<same path>.bundle.js` (SCSS → `.css` next to it). Views reference bundles explicitly, e.g. `~/js/src/views/home/index/index.bundle.js`; `src/index.ts` (+ `index.css`) is loaded by both `_Layout.cshtml` files on every page.
+- `webpack.common.js` (merged into `webpack.dev.js` / `webpack.prod.js`) turns **every** `.ts` file under `Scripts/src/` into its own entry, output to `wwwroot/js/src/<same path>.bundle.js` (SCSS → `.css` next to it). Views reference bundles explicitly, e.g. `~/js/src/views/home/index/index.bundle.js`; `src/index.ts` (+ `index.css`) is loaded by both `_Layout.cshtml` files on every page.
+- All third-party JS from `node_modules` goes into `wwwroot/js/vendors.bundle.js`, and there is a single webpack runtime `wwwroot/js/runtime.bundle.js` (`splitChunks`/`runtimeChunk` in `webpack.common.js`). Both `_Layout.cshtml` files load them before any other bundle; a page that does not use those layouts must include them itself. Vendor CSS stays in `src/index.css`.
 - Consequence: a module under `utils/` is also emitted as a standalone bundle, but its code only runs on a page if it is imported by a bundle that page loads (or the view adds its own `<script>`). Page-specific scripts go in `src/views/...` or `src/areas/...` mirroring the view path.
 - Stack: jQuery, Bootstrap 5.3 (+ bootstrap-icons), RxJS for event streams, dayjs.

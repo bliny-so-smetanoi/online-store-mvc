@@ -42,11 +42,13 @@ dotnet run --project OnlineStore/OnlineStore.csproj
 
 ```powershell
 npm ci
-npm exec -- webpack --mode development --no-watch
-npm exec -- webpack --mode production --no-watch
+npm run build:dev   # быстрая dev-сборка (webpack.dev.js)
+npm run build       # минифицированная prod-сборка (webpack.prod.js)
+npm run dev         # dev-сборка в режиме watch
+npm run typecheck   # проверка типов TypeScript
 ```
 
-Устанавливай зависимости, когда это необходимо. В `webpack.config.js` включён `watch: true`, а `npm run build` дополнительно задаёт `--watch`. Для разовой проверки используй команды с `--no-watch`, чтобы процесс завершился.
+Устанавливай зависимости, когда это необходимо. Конфигурация Webpack разделена: `webpack.common.js` (entry, loaders, output), `webpack.dev.js` (без минификации, ts-loader без проверки типов, кэш на диске) и `webpack.prod.js` (Terser + CssMinimizer, без source maps). Watch включается только в `npm run dev`; остальные команды завершаются сами. Dev-сборка не проверяет типы, поэтому для проверки запускай `npm run typecheck` или `npm run build`.
 
 Для локального запуска приложение использует SQL Server, Keycloak и конфигурацию Serilog/Seq. Уточняй настройки по коду и локальному окружению, не копируй секреты из конфигурации в ответы.
 
