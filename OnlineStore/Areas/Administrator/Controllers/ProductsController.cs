@@ -14,7 +14,7 @@ using OnlineStore.Helpers;
 
 namespace OnlineStore.Areas.Administrator.Controllers;
 
-[Authorize(Roles = RoleConstants.Root)]
+[Authorize(Roles = $"{RoleConstants.Root},{RoleConstants.Employee}")]
 [Area("Administrator")]
 [Route("[area]/[controller]")]
 public class ProductsController(IMediator mediator) : Controller

@@ -1,4 +1,8 @@
 @using Resource
+@using KeycloakExtension
+@{
+    var isRoot = User.IsInRole(RoleConstants.Root);
+}
 <!DOCTYPE html>
 <html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
 <head>
@@ -19,19 +23,28 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarScroll">
             <ul class="navbar-nav me-auto my-2 my-lg-0" style="--bs-scroll-height: 100px;">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">@CatalogResources.Get("Analytics")</a>
-                </li>
+                @if (isRoot)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">@CatalogResources.Get("Analytics")</a>
+                    </li>
+                }
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         @CatalogResources.Get("ShopManagement")
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" asp-area="Administrator" asp-controller="Products" asp-action="Index">@CatalogResources.Get("Warehouse")</a></li>
-                        <li><a class="dropdown-item" asp-area="Administrator" asp-controller="Categories" asp-action="Index">@CatalogResources.Get("Categories")</a></li>
+                        @if (isRoot)
+                        {
+                            <li><a class="dropdown-item" asp-area="Administrator" asp-controller="Categories" asp-action="Index">@CatalogResources.Get("Categories")</a></li>
+                        }
                         <li><a class="dropdown-item" href="#">@CatalogResources.Get("Orders")</a></li>
-                        <li><a class="dropdown-item" asp-area="Administrator" asp-controller="Storybook" asp-action="Index">Storybook</a></li>
-                        <li><a class="dropdown-item" href="http://localhost:8080/admin/master/console/#/web-net">@CatalogResources.Get("UsersManagement")</a></li>
+                        @if (isRoot)
+                        {
+                            <li><a class="dropdown-item" asp-area="Administrator" asp-controller="Storybook" asp-action="Index">Storybook</a></li>
+                            <li><a class="dropdown-item" href="http://localhost:8080/admin/master/console/#/web-net">@CatalogResources.Get("UsersManagement")</a></li>
+                        }
                     </ul>
                 </li>
             </ul>

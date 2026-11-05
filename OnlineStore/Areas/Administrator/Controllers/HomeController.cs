@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace OnlineStore.Areas.Administrator.Controllers;
 
-[Authorize(Roles = RoleConstants.Root)]
+[Authorize(Roles = $"{RoleConstants.Root},{RoleConstants.Employee}")]
 [Area("Administrator")]
 public class HomeController : Controller
 {
