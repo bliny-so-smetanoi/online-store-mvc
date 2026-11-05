@@ -45,4 +45,20 @@ public class Product : AuditableEntity
         Category = category;
         CategoryId = category?.Id;
     }
+
+    public void DecreaseQuantity(int quantity)
+    {
+        if (quantity <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(quantity), "Quantity must be positive");
+        }
+
+        if (Quantity < quantity)
+        {
+            throw new InvalidOperationException($"Not enough product in stock: {Name}");
+        }
+
+        Quantity -= quantity;
+        MakeModified();
+    }
 }

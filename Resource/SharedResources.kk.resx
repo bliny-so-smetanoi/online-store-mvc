@@ -103,4 +103,33 @@
     <data name="Quantity" xml:space="preserve"><value>Саны</value></data>
     <data name="Price" xml:space="preserve"><value>Бағасы</value></data>
     <data name="VisitorNotAuthenticated" xml:space="preserve"><value>Себетті пайдалану үшін телефон нөмірі арқылы кіріңіз.</value></data>
+    <data name="PlaceOrder" xml:space="preserve"><value>Тапсырыс беру</value></data>
+    <data name="Checkout" xml:space="preserve"><value>Тапсырысты рәсімдеу</value></data>
+    <data name="DeliveryAddress" xml:space="preserve"><value>Жеткізу мекенжайы</value></data>
+    <data name="Country" xml:space="preserve"><value>Ел</value></data>
+    <data name="City" xml:space="preserve"><value>Қала</value></data>
+    <data name="Street" xml:space="preserve"><value>Көше, үй, пәтер</value></data>
+    <data name="PostalCode" xml:space="preserve"><value>Пошта индексі</value></data>
+    <data name="PaymentDetails" xml:space="preserve"><value>Төлем деректері</value></data>
+    <data name="CardHolderName" xml:space="preserve"><value>Карта иесінің аты</value></data>
+    <data name="CardNumber" xml:space="preserve"><value>Карта нөмірі</value></data>
+    <data name="ExpirationDate" xml:space="preserve"><value>Жарамдылық мерзімі (АА/ЖЖ)</value></data>
+    <data name="Cvv" xml:space="preserve"><value>CVV</value></data>
+    <data name="OrderSummary" xml:space="preserve"><value>Тапсырыс құрамы</value></data>
+    <data name="BackToCart" xml:space="preserve"><value>Себетке оралу</value></data>
+    <data name="OrderPlaced" xml:space="preserve"><value>Тапсырысыңыз рәсімделді.</value></data>
+    <data name="OrderPlacedMessage" xml:space="preserve"><value>Рахмет! Тапсырысты растау үшін сізбен байланысамыз.</value></data>
+    <data name="FieldInvalid" xml:space="preserve"><value>Бұл өрісті тексеріңіз.</value></data>
+    <data name="MyOrders" xml:space="preserve"><value>Менің тапсырыстарым</value></data>
+    <data name="OrderNumber" xml:space="preserve"><value>Тапсырыс</value></data>
+    <data name="OrderDate" xml:space="preserve"><value>Тапсырыс күні</value></data>
+    <data name="OrderStatus" xml:space="preserve"><value>Күйі</value></data>
+    <data name="OrderItems" xml:space="preserve"><value>Тауарлар</value></data>
+    <data name="OrdersEmpty" xml:space="preserve"><value>Сізде әлі тапсырыс жоқ.</value></data>
+    <data name="OrderStatusCreated" xml:space="preserve"><value>Құрылды</value></data>
+    <data name="OrderStatusProcessing" xml:space="preserve"><value>Өңделуде</value></data>
+    <data name="OrderStatusComposing" xml:space="preserve"><value>Жиналуда</value></data>
+    <data name="OrderStatusDelivering" xml:space="preserve"><value>Жеткізілуде</value></data>
+    <data name="OrderStatusCompleted" xml:space="preserve"><value>Аяқталды</value></data>
+    <data name="OrderStatusCancelled" xml:space="preserve"><value>Бас тартылды</value></data>
 </root>

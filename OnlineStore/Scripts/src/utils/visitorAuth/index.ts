@@ -58,6 +58,7 @@ function markAuthenticated(requestToken: string | undefined) {
     $("#visitor-login-item").prop("hidden", true);
     $("#visitor-logout-item").prop("hidden", false);
     $("#visitor-cart-nav").prop("hidden", false);
+    $("#visitor-orders-nav").prop("hidden", false);
 }
 
 function openLoginModal(): Promise<boolean> {

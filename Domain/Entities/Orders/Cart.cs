@@ -1,6 +1,7 @@
 ﻿using Domain.Entities.Products;
 using Domain.Enums;
 using Domain.SeedWork;
+using Domain.ValueObjects;
 
 namespace Domain.Entities.Orders;
 
@@ -51,5 +52,22 @@ public class Cart : AuditableEntity
         }
         Products.Remove(productForRemove);
         MakeModified();
+    }
+
+    public Order PlaceOrder(Address address, PaymentInfo paymentInfo)
+    {
+        if (Products.Count == 0)
+        {
+            throw new InvalidOperationException("Cannot place an order for an empty cart");
+        }
+
+        foreach (var productInCart in Products)
+        {
+            productInCart.Product.DecreaseQuantity(productInCart.Quantity);
+        }
+
+        Status = CartStatus.Ordered;
+        MakeModified();
+        return Order.Create(this, address, paymentInfo);
     }
 }

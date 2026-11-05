@@ -32,6 +32,7 @@ $(() => {
         $totalQuantity.text(quantity);
         $totalPrice.text(priceFormat.format(price));
         $empty.prop("hidden", quantity > 0);
+        $("#cart-place-order").prop("hidden", quantity === 0);
     }
 
     fromEvent<MouseEvent>($items, "click").pipe(

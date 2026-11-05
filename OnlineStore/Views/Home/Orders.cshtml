@@ -1,0 +1,105 @@
+﻿@using System.Globalization
+@using Domain.Enums
+@using Resource
+@model List<Application.UseCases.Orders.Dtos.VisitorOrderDto>
+@{
+    ViewData["Title"] = CatalogResources.Get("MyOrders");
+    var priceCulture = CultureInfo.GetCultureInfo("en-US");
+
+    string StatusBadge(OrderStatus status) => status switch
+    {
+        OrderStatus.Created => "text-bg-secondary",
+        OrderStatus.Processing => "text-bg-info",
+        OrderStatus.Composing => "text-bg-warning",
+        OrderStatus.Delivering => "text-bg-primary",
+        OrderStatus.Completed => "text-bg-success",
+        OrderStatus.Cancelled => "text-bg-danger",
+        _ => "text-bg-secondary"
+    };
+}
+
+<div class="container mt-4" id="visitor-orders">
+    <h1 class="h2 mb-4 text-center"><i class="bi-bag-check"></i> @CatalogResources.Get("MyOrders")</h1>
+
+    @if (Model.Count == 0)
+    {
+        <div class="text-center mt-4" role="status">
+            <p>@CatalogResources.Get("OrdersEmpty")</p>
+            <a class="btn btn-primary" asp-action="Index" asp-controller="Home">@CatalogResources.Get("ContinueShopping")</a>
+        </div>
+    }
+
+    <div class="row row-cols-1 g-4">
+        @foreach (var order in Model)
+        {
+            <div class="col">
+                <article class="card h-100" aria-labelledby="order-@order.Number">
+                    <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <h2 class="h5 mb-0" id="order-@order.Number">
+                            @CatalogResources.Get("OrderNumber") #@order.Number
+                        </h2>
+                        <span class="badge @StatusBadge(order.Status) fs-6">
+                            @CatalogResources.Get($"OrderStatus{order.Status}")
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <dl class="row mb-0">
+                                    <dt class="col-sm-5">@CatalogResources.Get("OrderDate")</dt>
+                                    <dd class="col-sm-7">@order.Created.ToString("dd.MM.yyyy HH:mm")</dd>
+
+                                    <dt class="col-sm-5">@CatalogResources.Get("OrderStatus")</dt>
+                                    <dd class="col-sm-7">@CatalogResources.Get($"OrderStatus{order.Status}")</dd>
+
+                                    <dt class="col-sm-5"><i class="bi-geo-alt"></i> @CatalogResources.Get("DeliveryAddress")</dt>
+                                    <dd class="col-sm-7">
+                                        @order.Street<br>
+                                        @order.City, @order.PostalCode<br>
+                                        @order.Country
+                                    </dd>
+
+                                    <dt class="col-sm-5"><i class="bi-credit-card"></i> @CatalogResources.Get("PaymentDetails")</dt>
+                                    <dd class="col-sm-7 mb-0">
+                                        @order.MaskedCardNumber<br>
+                                        @order.CardHolderName<br>
+                                        <span class="text-secondary">@order.ExpirationDate</span>
+                                    </dd>
+                                </dl>
+                            </div>
+
+                            <div class="col-md-6">
+                                <h3 class="h6">@CatalogResources.Get("OrderItems")</h3>
+                                <ul class="list-group list-group-flush mb-3">
+                                    @foreach (var item in order.Items)
+                                    {
+                                        <li class="list-group-item px-0 d-flex justify-content-between gap-2">
+                                            <span>
+                                                <a class="link-body-emphasis text-decoration-none"
+                                                   asp-action="Product" asp-controller="Home" asp-route-id="@item.ProductId">@item.Name</a>
+                                                <span class="text-secondary">× @item.Quantity</span>
+                                                @if (!string.IsNullOrEmpty(item.CategoryName))
+                                                {
+                                                    <br><small class="text-secondary">@item.CategoryName</small>
+                                                }
+                                            </span>
+                                            <span class="text-nowrap">@item.TotalPrice.ToString("N2", priceCulture)</span>
+                                        </li>
+                                    }
+                                </ul>
+                                <div class="d-flex justify-content-between">
+                                    <span>@CatalogResources.Get("CartItemsCount")</span>
+                                    <span>@order.TotalQuantity</span>
+                                </div>
+                                <div class="d-flex justify-content-between fw-bold">
+                                    <span>@CatalogResources.Get("CartTotal")</span>
+                                    <span>@order.TotalPrice.ToString("N2", priceCulture)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        }
+    </div>
+</div>

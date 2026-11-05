@@ -36,6 +36,9 @@
                         <li class="nav-item" id="visitor-cart-nav" hidden="@(!isAuthenticated)">
                             <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Cart"> <i class="bi-cart text-light"></i> My cart</a>
                         </li>
+                        <li class="nav-item" id="visitor-orders-nav" hidden="@(!isAuthenticated)">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Orders"> <i class="bi-bag-check text-light"></i> @CatalogResources.Get("MyOrders")</a>
+                        </li>
                         
                     </div>
                     

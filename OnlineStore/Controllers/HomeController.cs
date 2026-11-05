@@ -11,9 +11,11 @@ using Application.UseCases.Products.Queries.GetProductsVisitor;
 using Application.UseCases.Products.Queries.GetImageContent;
 using Application.UseCases.Products.Queries.GetProductDetails;
 using Application.UseCases.Orders.Commands.AddToCart;
+using Application.UseCases.Orders.Commands.PlaceOrder;
 using Application.UseCases.Orders.Commands.RemoveFromCart;
 using Application.UseCases.Orders.Dtos;
 using Application.UseCases.Orders.Queries.GetVisitorCart;
+using Application.UseCases.Orders.Queries.GetVisitorOrders;
 using KeycloakExtension;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
@@ -130,6 +132,52 @@ public class HomeController : Controller
             return Unauthorized(CatalogResources.Get("VisitorNotAuthenticated"));
 
         var result = await _mediator.Send(new RemoveFromCartCommand(model.ProductId, visitorId.Value), cancellationToken);
+        if (result.IsFailure)
+            return BadRequest(result.Error);
+
+        return Ok();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Orders(CancellationToken cancellationToken)
+    {
+        var visitorId = GetVisitorId();
+        if (visitorId is null)
+            return RedirectToAction(nameof(Index));
+
+        var result = await _mediator.Send(new GetVisitorOrdersQuery(visitorId.Value), cancellationToken);
+        if (result.IsFailure)
+            return RedirectToAction(nameof(Index));
+
+        return View(result.Value);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Checkout(CancellationToken cancellationToken)
+    {
+        var visitorId = GetVisitorId();
+        if (visitorId is null)
+            return RedirectToAction(nameof(Index));
+
+        var result = await _mediator.Send(new GetVisitorCartQuery(visitorId.Value), cancellationToken);
+        if (result.IsFailure)
+            return RedirectToAction(nameof(Index));
+
+        if (result.Value.Items.Count == 0)
+            return RedirectToAction(nameof(Cart));
+
+        return View(result.Value);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> PlaceOrder([FromBody] PlaceOrderDto model, CancellationToken cancellationToken)
+    {
+        var visitorId = GetVisitorId();
+        if (visitorId is null)
+            return Unauthorized(CatalogResources.Get("VisitorNotAuthenticated"));
+
+        var result = await _mediator.Send(new PlaceOrderCommand(visitorId.Value, model), cancellationToken);
         if (result.IsFailure)
             return BadRequest(result.Error);
 
