@@ -7,40 +7,40 @@
 </div>
 
 <div class="container mt-4">
-    <p class="h3">Form example:</p>
+    <p class="h3">@CatalogResources.Get("FormExample")</p>
     <div>
         <form id="addTodoForm" class="container mt-3">
             <div class="mb-3">
-                <label for="storybookView_title" class="form-label">Title</label>
+                <label for="storybookView_title" class="form-label">@CatalogResources.Get("Title")</label>
                 <input id="storybookView_title" type="text" class="form-control" />
                 <div id="titleError" class="invalid-feedback"></div>
             </div>
             
             <button id="addTodoBtn" type="submit" class="btn btn-primary">
-                Add product
+                @CatalogResources.Get("AddProduct")
             </button>
         </form>
     </div>
 </div>
 
 <div class="container mt-4">
-    <p class="h3">Table example:</p>
+    <p class="h3">@CatalogResources.Get("TableExample")</p>
     <table class="table table-striped table-bordered">
         <thead>
         <th scope="col">Id</th>
-        <th scope="col">@SharedResources.Title</th>
-        <th scope="col">@SharedResources.Description</th>
+        <th scope="col">@CatalogResources.Get("Title")</th>
+        <th scope="col">@CatalogResources.Get("Description")</th>
         <tr>
             <td> <input class="form-control form-control-sm column-search" data-field="id" placeholder="Id"/> </td> 
-            <td> <input class="form-control form-control-sm column-search" data-field="title" placeholder="Title"/> </td> 
-            <td> <input class="form-control form-control-sm column-search" data-field="created" placeholder="Created Date"/> </td>
+            <td> <input class="form-control form-control-sm column-search" data-field="title" placeholder="@CatalogResources.Get("Title")"/> </td> 
+            <td> <input class="form-control form-control-sm column-search" data-field="created" placeholder="@CatalogResources.Get("CreatedDate")"/> </td>
         </tr>
         </thead>
     
         <tbody id="about-table-body" class="table-group-divider">
         </tbody>
     </table>
-    <nav aria-label="Todo pagination">
+    <nav aria-label="@CatalogResources.Get("Pagination")">
         <ul class="pagination pagination-sm" id="about-pagination"></ul>
     </nav>
 </div>

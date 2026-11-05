@@ -1,10 +1,10 @@
 ﻿@using Resource
 @model Application.UseCases.TodoItem.Dtos.TodoItemDto
 @{
-    ViewData["Title"] = @SharedResources.AboutViewTitle;
+    ViewData["Title"] = CatalogResources.Get("AboutViewTitle");
 }
 <div class="container-fluid">
-    <p class="h2">It is Mvc Template application</p>
+    <p class="h2">@CatalogResources.Get("AboutAppText")</p>
     
 </div>
 

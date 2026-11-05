@@ -5,7 +5,7 @@
     var isAuthenticated = User.Identity?.IsAuthenticated == true;
 }
 <!DOCTYPE html>
-<html lang="en">
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -21,20 +21,20 @@
         <div class="container-fluid">
             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">OnlineStore</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
+                    aria-expanded="false" aria-label="@CatalogResources.Get("ToggleNavigation")">
                 <span class="navbar-toggler-icon"></span> 
             </button>
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
                     <div class="container-fluid d-sm-inline-flex">
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">@SharedResources.HomePage</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">@CatalogResources.Get("HomePage")</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="About">@SharedResources.AboutViewTitle</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="About">@CatalogResources.Get("AboutViewTitle")</a>
                         </li>
                         <li class="nav-item" id="visitor-cart-nav" hidden="@(!isAuthenticated)">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Cart"> <i class="bi-cart text-light"></i> My cart</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Cart"> <i class="bi-cart text-light"></i> @CatalogResources.Get("MyCart")</a>
                         </li>
                         <li class="nav-item" id="visitor-orders-nav" hidden="@(!isAuthenticated)">
                             <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Orders"> <i class="bi-bag-check text-light"></i> @CatalogResources.Get("MyOrders")</a>
@@ -44,12 +44,12 @@
                     
                     <div class="container-fluid d-sm-inline-flex justify-content-end align-items-center">
                         <li class="nav-item dropdown">
-                            <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" aria-label="@CatalogResources.Get("Language")">
                                 <i class="bi-globe"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-dark">
-                                <li><a class="dropdown-item" asp-controller="Culture" asp-action="ChangeLanguage" asp-route-locale="kk"><img src="https://flagcdn.com/kz.svg" width="40" alt="UK Flag"> Qazaqsha</a></li>
-                                <li><a class="dropdown-item" asp-controller="Culture" asp-action="ChangeLanguage" asp-route-locale="en"><img src="https://flagcdn.com/gb.svg" width="40" alt="UK Flag"> English</a></li>
+                                <li><a class="dropdown-item" asp-controller="Culture" asp-action="ChangeLanguage" asp-route-locale="kk"><img src="https://flagcdn.com/kz.svg" width="40" alt="@CatalogResources.Get("KazakhstanFlag")"> Қазақша</a></li>
+                                <li><a class="dropdown-item" asp-controller="Culture" asp-action="ChangeLanguage" asp-route-locale="en"><img src="https://flagcdn.com/gb.svg" width="40" alt="@CatalogResources.Get("UnitedKingdomFlag")"> English</a></li>
                             </ul>
                         </li>
 
@@ -68,7 +68,7 @@
                         </li>
                         
                         <li class="nav-item" id="visitor-logout-item" hidden="@(!isAuthenticated)">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="Logout"> <i class="bi-person-fill-slash"></i> @SharedResources.Logout</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="Logout"> <i class="bi-person-fill-slash"></i> @CatalogResources.Get("Logout")</a>
                         </li>
                         
                     </div>
@@ -86,11 +86,10 @@
 <div class="toast-container position-fixed top-0 end-0 p-3">
     <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
-            <strong class="me-auto">Bootstrap</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            <strong class="me-auto">@CatalogResources.Get("Notification")</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="@CatalogResources.Get("Close")"></button>
         </div>
         <div class="toast-body">
-            Hello, world! This is a toast message.
         </div>
     </div>
 </div>
@@ -98,7 +97,7 @@
 <div id="loader-spinner" class="d-none position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
      style="background-color: rgba(255,255,255,0.7); z-index: 2000;">
     <div class="spinner-border text-primary" style="width: 4rem; height: 4rem;" role="status">
-        <span class="visually-hidden">Loading...</span>
+        <span class="visually-hidden">@CatalogResources.Get("Loading")</span>
     </div>
 </div> 
 
@@ -106,15 +105,15 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">@CatalogResources.Get("Notification")</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@CatalogResources.Get("Close")"></button>
             </div>
             <div class="modal-body">
                 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@SharedResources.Close</button>
-                <button type="button" class="btn btn-primary">@SharedResources.Accept</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@CatalogResources.Get("Close")</button>
+                <button type="button" class="btn btn-primary">@CatalogResources.Get("Accept")</button>
             </div>
         </div>
     </div>
@@ -128,7 +127,7 @@
             @Html.AntiForgeryToken()
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="visitor-login-title">@CatalogResources.Get("Login")</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@SharedResources.Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@CatalogResources.Get("Close")"></button>
             </div>
             <div class="modal-body">
                 <p class="text-body-secondary small">@CatalogResources.Get("VisitorLoginHint")</p>
@@ -147,7 +146,7 @@
                 <div class="alert alert-danger py-2 small mb-0" id="visitor-login-error" role="alert" hidden></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@SharedResources.Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@CatalogResources.Get("Close")</button>
                 <button type="submit" class="btn btn-primary" id="visitor-login-submit"
                         data-label-request="@CatalogResources.Get("GetCode")"
                         data-label-login="@CatalogResources.Get("Login")">

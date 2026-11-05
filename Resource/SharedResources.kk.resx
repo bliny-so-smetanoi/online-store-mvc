@@ -34,7 +34,7 @@
         <value>Қазіргі тіл</value>
     </data>
     <data name="AboutViewTitle" xml:space="preserve">
-        <value>Косысша туралы</value>
+        <value>Қосымша туралы</value>
     </data>
     <data name="ForbiddenTitle" xml:space="preserve">
         <value>Рұқсат жоқ</value>
@@ -132,4 +132,43 @@
     <data name="OrderStatusDelivering" xml:space="preserve"><value>Жеткізілуде</value></data>
     <data name="OrderStatusCompleted" xml:space="preserve"><value>Аяқталды</value></data>
     <data name="OrderStatusCancelled" xml:space="preserve"><value>Бас тартылды</value></data>
+    <data name="WelcomeToStore" xml:space="preserve"><value>OnlineStore дүкеніне қош келдіңіз</value></data>
+    <data name="AboutAppText" xml:space="preserve"><value>Бұл MVC үлгісіндегі қосымша</value></data>
+    <data name="SearchProducts" xml:space="preserve"><value>Тауарларды іздеу</value></data>
+    <data name="SearchPlaceholder" xml:space="preserve"><value>Қалағаныңыздың бәрін іздеңіз...</value></data>
+    <data name="Search" xml:space="preserve"><value>Іздеу</value></data>
+    <data name="Products" xml:space="preserve"><value>Тауарлар</value></data>
+    <data name="LoadingProducts" xml:space="preserve"><value>Тауарлар жүктелуде...</value></data>
+    <data name="NoProductsFound" xml:space="preserve"><value>Тауарлар табылмады.</value></data>
+    <data name="ProductsLoadError" xml:space="preserve"><value>Тауарларды жүктеу мүмкін болмады. Қайталап көріңіз.</value></data>
+    <data name="TryAgain" xml:space="preserve"><value>Қайталау</value></data>
+    <data name="ShowMore" xml:space="preserve"><value>Тағы көрсету</value></data>
+    <data name="EnableJavaScript" xml:space="preserve"><value>Тауарларды қарау үшін JavaScript-ті қосыңыз.</value></data>
+    <data name="NoImage" xml:space="preserve"><value>Сурет жоқ</value></data>
+    <data name="BackToCatalog" xml:space="preserve"><value>Каталогқа оралу</value></data>
+    <data name="ImageNumber" xml:space="preserve"><value>{0}-сурет</value></data>
+    <data name="InStock" xml:space="preserve"><value>Қоймада бар</value></data>
+    <data name="OutOfStock" xml:space="preserve"><value>Қоймада жоқ</value></data>
+    <data name="ToggleNavigation" xml:space="preserve"><value>Мәзірді ашу/жабу</value></data>
+    <data name="KazakhstanFlag" xml:space="preserve"><value>Қазақстан туы</value></data>
+    <data name="UnitedKingdomFlag" xml:space="preserve"><value>Ұлыбритания туы</value></data>
+    <data name="Notification" xml:space="preserve"><value>Хабарландыру</value></data>
+    <data name="Loading" xml:space="preserve"><value>Жүктелуде...</value></data>
+    <data name="AdminWelcome" xml:space="preserve"><value>Әкімші панеліне қош келдіңіз</value></data>
+    <data name="AdminBrand" xml:space="preserve"><value>Интернет-дүкенді басқару</value></data>
+    <data name="Analytics" xml:space="preserve"><value>Аналитика</value></data>
+    <data name="ShopManagement" xml:space="preserve"><value>Дүкенді басқару</value></data>
+    <data name="Warehouse" xml:space="preserve"><value>Қойма</value></data>
+    <data name="Orders" xml:space="preserve"><value>Тапсырыстар</value></data>
+    <data name="UsersManagement" xml:space="preserve"><value>Пайдаланушыларды басқару</value></data>
+    <data name="AddProduct" xml:space="preserve"><value>Тауар қосу</value></data>
+    <data name="EditProduct" xml:space="preserve"><value>Тауарды өңдеу</value></data>
+    <data name="ProductList" xml:space="preserve"><value>Тауарлар тізімі</value></data>
+    <data name="ProductName" xml:space="preserve"><value>Атауы</value></data>
+    <data name="ProductImages" xml:space="preserve"><value>Тауар суреттері</value></data>
+    <data name="CreatedDate" xml:space="preserve"><value>Құрылған күні</value></data>
+    <data name="Save" xml:space="preserve"><value>Сақтау</value></data>
+    <data name="Pagination" xml:space="preserve"><value>Беттер навигациясы</value></data>
+    <data name="FormExample" xml:space="preserve"><value>Форма мысалы:</value></data>
+    <data name="TableExample" xml:space="preserve"><value>Кесте мысалы:</value></data>
 </root>

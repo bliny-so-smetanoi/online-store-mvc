@@ -10,7 +10,7 @@
 <div class="container mt-4" id="checkout"
      data-place-order-url="@Url.Action("PlaceOrder", "Home")"
      data-title="@CatalogResources.Get("Checkout")"
-     data-error-title="@SharedResources.Error">
+     data-error-title="@CatalogResources.Get("Error")">
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
         <h1 class="h2 mb-0"><i class="bi-bag-check"></i> @CatalogResources.Get("Checkout")</h1>
         <a class="btn btn-outline-secondary" asp-action="Cart" asp-controller="Home">

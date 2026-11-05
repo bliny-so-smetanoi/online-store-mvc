@@ -1,10 +1,11 @@
+@using Resource
 @{
-    ViewData["Title"] = "Edit product";
+    ViewData["Title"] = CatalogResources.Get("EditProduct");
 }
 
 <div class="container mt-4">
 
-    <p class="h3 mb-4">Edit product</p>
+    <p class="h3 mb-4">@CatalogResources.Get("EditProduct")</p>
 
     <form id="updateProductForm" class="container mt-3">
 
@@ -20,7 +21,7 @@
                 for="administratorProductsView_name"
                 class="form-label"
             >
-                Name
+                @CatalogResources.Get("ProductName")
             </label>
 
             <input
@@ -42,7 +43,7 @@
                 for="administratorProductsView_description"
                 class="form-label"
             >
-                Description
+                @CatalogResources.Get("Description")
             </label>
 
             <textarea
@@ -64,7 +65,7 @@ rows="4" cols="50"
                 for="administratorProductsView_price"
                 class="form-label"
             >
-                Price
+                @CatalogResources.Get("Price")
             </label>
 
             <input
@@ -86,7 +87,7 @@ rows="4" cols="50"
                 for="administratorProductsView_quantity"
                 class="form-label"
             >
-                Quantity
+                @CatalogResources.Get("Quantity")
             </label>
 
             <input
@@ -102,9 +103,9 @@ rows="4" cols="50"
 
         </div>
         <div class="mb-3">
-            <label for="administratorProductsView_category" class="form-label">Category</label>
+            <label for="administratorProductsView_category" class="form-label">@CatalogResources.Get("Category")</label>
             <select id="administratorProductsView_category" name="CategoryId" asp-items="ViewBag.Categories" class="form-select">
-                <option value="">No category</option>
+                <option value="">@CatalogResources.Get("NoCategory")</option>
             </select>
         </div>
         <div class="mb-3">
@@ -113,7 +114,7 @@ rows="4" cols="50"
                 for="formFileMultiple"
                 class="form-label"
             >
-                Product images
+                @CatalogResources.Get("ProductImages")
             </label>
 
             <input
@@ -137,7 +138,7 @@ rows="4" cols="50"
             type="submit"
             class="btn btn-primary"
         >
-            Save
+            @CatalogResources.Get("Save")
         </button>
 
     </form>

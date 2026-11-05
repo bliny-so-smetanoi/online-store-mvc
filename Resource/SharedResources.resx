@@ -132,4 +132,43 @@
     <data name="OrderStatusDelivering" xml:space="preserve"><value>Delivering</value></data>
     <data name="OrderStatusCompleted" xml:space="preserve"><value>Completed</value></data>
     <data name="OrderStatusCancelled" xml:space="preserve"><value>Cancelled</value></data>
+    <data name="WelcomeToStore" xml:space="preserve"><value>Welcome to OnlineStore</value></data>
+    <data name="AboutAppText" xml:space="preserve"><value>It is Mvc Template application</value></data>
+    <data name="SearchProducts" xml:space="preserve"><value>Search products</value></data>
+    <data name="SearchPlaceholder" xml:space="preserve"><value>Search for everything you desire...</value></data>
+    <data name="Search" xml:space="preserve"><value>Search</value></data>
+    <data name="Products" xml:space="preserve"><value>Products</value></data>
+    <data name="LoadingProducts" xml:space="preserve"><value>Loading products...</value></data>
+    <data name="NoProductsFound" xml:space="preserve"><value>No products found.</value></data>
+    <data name="ProductsLoadError" xml:space="preserve"><value>Could not load products. Please try again.</value></data>
+    <data name="TryAgain" xml:space="preserve"><value>Try again</value></data>
+    <data name="ShowMore" xml:space="preserve"><value>Show more</value></data>
+    <data name="EnableJavaScript" xml:space="preserve"><value>Please enable JavaScript to browse products.</value></data>
+    <data name="NoImage" xml:space="preserve"><value>No image available</value></data>
+    <data name="BackToCatalog" xml:space="preserve"><value>Back to catalog</value></data>
+    <data name="ImageNumber" xml:space="preserve"><value>Image {0}</value></data>
+    <data name="InStock" xml:space="preserve"><value>In stock</value></data>
+    <data name="OutOfStock" xml:space="preserve"><value>Out of stock</value></data>
+    <data name="ToggleNavigation" xml:space="preserve"><value>Toggle navigation</value></data>
+    <data name="KazakhstanFlag" xml:space="preserve"><value>Kazakhstan flag</value></data>
+    <data name="UnitedKingdomFlag" xml:space="preserve"><value>United Kingdom flag</value></data>
+    <data name="Notification" xml:space="preserve"><value>Notification</value></data>
+    <data name="Loading" xml:space="preserve"><value>Loading...</value></data>
+    <data name="AdminWelcome" xml:space="preserve"><value>Welcome to admin area</value></data>
+    <data name="AdminBrand" xml:space="preserve"><value>Online store management</value></data>
+    <data name="Analytics" xml:space="preserve"><value>Analytics</value></data>
+    <data name="ShopManagement" xml:space="preserve"><value>Shop management</value></data>
+    <data name="Warehouse" xml:space="preserve"><value>Warehouse</value></data>
+    <data name="Orders" xml:space="preserve"><value>Orders</value></data>
+    <data name="UsersManagement" xml:space="preserve"><value>Users management</value></data>
+    <data name="AddProduct" xml:space="preserve"><value>Add product</value></data>
+    <data name="EditProduct" xml:space="preserve"><value>Edit product</value></data>
+    <data name="ProductList" xml:space="preserve"><value>Product list</value></data>
+    <data name="ProductName" xml:space="preserve"><value>Name</value></data>
+    <data name="ProductImages" xml:space="preserve"><value>Product images</value></data>
+    <data name="CreatedDate" xml:space="preserve"><value>Created date</value></data>
+    <data name="Save" xml:space="preserve"><value>Save</value></data>
+    <data name="Pagination" xml:space="preserve"><value>Pagination</value></data>
+    <data name="FormExample" xml:space="preserve"><value>Form example:</value></data>
+    <data name="TableExample" xml:space="preserve"><value>Table example:</value></data>
 </root>
