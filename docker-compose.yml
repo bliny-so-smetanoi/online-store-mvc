@@ -129,6 +129,8 @@ services:
       - keycloak
     environment:
       DOMAIN: ${DOMAIN:?Задайте DOMAIN в .env}
+      # acme (Let's Encrypt) | internal (самоподписанный, для локальной сети)
+      CADDY_TLS: ${CADDY_TLS:-acme}
     ports:
       - "80:80"
       - "443:443"

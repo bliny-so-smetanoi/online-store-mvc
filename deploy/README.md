@@ -75,5 +75,20 @@ SSMS / Rider / Azure Data Studio: сервер `DOMAIN,1433` (или IP серв
   нужно вносить в консоли Keycloak вручную (Clients → mvc-template: Credentials, Valid redirect URIs).
 - Данные живут в docker volumes (`sqlserver-data`, `seq-data`, `caddy-data`, `app-dataprotection`).
   `docker compose down -v` удалит их безвозвратно.
-- Если домена нет и нужен только локальный тест, `DOMAIN=localhost` тоже работает: Caddy выдаст
-  самоподписанный сертификат (браузер покажет предупреждение).
+
+## Локальная сеть / VirtualBox (без доступа из интернета)
+
+Let's Encrypt не сможет проверить домен, поэтому включите самоподписанный сертификат:
+
+```
+CADDY_TLS=internal
+DOMAIN=onlinestore.example.com   # или localhost / IP виртуалки
+```
+
+- Для домена добавьте на каждом клиенте в `hosts` (Windows: `C:\Windows\System32\drivers\etc\hosts`)
+  строку `<IP виртуалки> onlinestore.example.com`. Сайт открывается только по `DOMAIN`, не по IP —
+  на него ведут редиректы Keycloak.
+- VirtualBox NAT: пробросьте порты 80/443 (и 1433) с хоста и используйте `DOMAIN=localhost`.
+- Чтобы браузер не ругался, установите корневой сертификат Caddy в «Доверенные корневые центры сертификации»:
+  `docker compose cp caddy:/data/caddy/pki/authorities/local/root.crt ./caddy-root.crt`.
+- Переход на `CADDY_TLS=acme` позже: поменяйте `.env` и выполните `docker compose up -d caddy`.

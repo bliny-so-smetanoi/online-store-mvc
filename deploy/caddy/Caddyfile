@@ -1,6 +1,11 @@
-# HTTPS-сертификат Let's Encrypt выпускается автоматически для {$DOMAIN}
-# (домен должен указывать на сервер, порты 80/443 открыты).
+# Сертификат для {$DOMAIN} задаётся CADDY_TLS в .env:
+#   acme     — Let's Encrypt (домен указывает на сервер, порты 80/443 доступны из интернета)
+#   internal — самоподписанный сертификат от встроенного CA Caddy (локальная сеть, VirtualBox)
 {$DOMAIN} {
+	tls {
+		issuer {$CADDY_TLS:acme}
+	}
+
 	encode gzip
 
 	# Keycloak (KC_HTTP_RELATIVE_PATH=/auth)
