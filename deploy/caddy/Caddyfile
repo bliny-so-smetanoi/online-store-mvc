@@ -1,6 +1,6 @@
-# Сертификат для {$DOMAIN} задаётся CADDY_TLS в .env:
-#   acme     — Let's Encrypt (домен указывает на сервер, порты 80/443 доступны из интернета)
-#   internal — самоподписанный сертификат от встроенного CA Caddy (локальная сеть, VirtualBox)
+# The certificate for {$DOMAIN} is chosen by CADDY_TLS in .env:
+#   acme     — Let's Encrypt (domain points to the server, ports 80/443 reachable from the internet)
+#   internal — self-signed certificate from Caddy's built-in CA (local network, VirtualBox)
 {$DOMAIN} {
 	tls {
 		issuer {$CADDY_TLS:acme}
@@ -14,7 +14,7 @@
 		reverse_proxy keycloak:8080
 	}
 
-	# Приложение
+	# Application
 	handle {
 		reverse_proxy app:8080
 	}

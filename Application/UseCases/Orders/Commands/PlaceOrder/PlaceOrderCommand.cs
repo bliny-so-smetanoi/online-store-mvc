@@ -88,7 +88,7 @@ public class PlaceOrderCommandValidator : RequestValidatorBase<PlaceOrderCommand
         return Result.Success();
     }
 
-    // 12–19 цифр (пробелы и дефисы допускаются) + контрольная сумма Луна
+    // 12–19 digits (spaces and dashes allowed) + Luhn checksum
     private static bool BeValidCardNumber(string? cardNumber)
     {
         if (string.IsNullOrWhiteSpace(cardNumber) || cardNumber.Any(c => !char.IsDigit(c) && c != ' ' && c != '-'))

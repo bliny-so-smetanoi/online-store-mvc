@@ -6,14 +6,14 @@ WORKDIR /src/OnlineStore/Scripts
 COPY OnlineStore/Scripts/package.json OnlineStore/Scripts/package-lock.json ./
 RUN npm ci
 COPY OnlineStore/Scripts/ ./
-# Собирает бандлы в /src/OnlineStore/wwwroot/js
+# Builds the bundles into /src/OnlineStore/wwwroot/js
 RUN npm run build
 
 # ---------- 2. Backend (dotnet publish) ----------
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Сначала только csproj — чтобы restore кешировался отдельно от исходников
+# csproj files first, so restore is cached separately from the sources
 COPY OnlineStore.sln ./
 COPY OnlineStore/OnlineStore.csproj OnlineStore/
 COPY Application/Application.csproj Application/
@@ -32,7 +32,7 @@ RUN dotnet publish OnlineStore/OnlineStore.csproj -c Release -o /app/publish --n
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 
-# Каталог для ключей Data Protection (монтируется volume, чтобы куки входа переживали пересоздание контейнера)
+# Directory for Data Protection keys (mounted as a volume so sign-in cookies survive container re-creation)
 RUN mkdir -p /home/app/.aspnet/DataProtection-Keys && chown -R app:app /home/app/.aspnet
 
 COPY --from=build /app/publish .

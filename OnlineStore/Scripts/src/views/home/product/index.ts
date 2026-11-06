@@ -29,7 +29,7 @@ $(() => {
         $mainImage.prop("hidden", false).attr("src", String($button.data("image-url")));
     });
 
-    // Добавление в корзину: сначала вход визитора (модальное окно из _Layout), затем запрос AddToCart
+    // Add to cart: visitor sign-in first (modal from _Layout), then the AddToCart request
     fromEvent($addToCart, "click").pipe(
         exhaustMap(() => from(window.requestVisitorAuth()).pipe(
             filter(authenticated => authenticated),

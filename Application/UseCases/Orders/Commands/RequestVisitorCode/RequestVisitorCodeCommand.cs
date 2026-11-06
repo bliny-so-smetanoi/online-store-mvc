@@ -26,7 +26,7 @@ public class RequestVisitorCodeCommandHandler(
 
         if (visitor is null)
         {
-            // Первый вход: визитор создаётся вместе с первым кодом
+            // First sign-in: the visitor is created together with the first code
             visitor = Visitor.Create(phone, string.Empty);
             visitor.AddAuthenticationCode(code);
             await visitorRepository.CreateAsync(visitor, cancellationToken);

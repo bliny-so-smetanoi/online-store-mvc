@@ -1,5 +1,8 @@
 @using Resource
 @using KeycloakExtension
+@using KeycloakExtension.Options
+@using Microsoft.Extensions.Options
+@inject IOptions<KeycloakProvisioningOptions> KeycloakOptions
 @{
     var isRoot = User.IsInRole(RoleConstants.Root);
 }
@@ -43,7 +46,7 @@
                         @if (isRoot)
                         {
                             <li><a class="dropdown-item" asp-area="Administrator" asp-controller="Storybook" asp-action="Index">Storybook</a></li>
-                            <li><a class="dropdown-item" href="http://localhost:8080/admin/master/console/#/web-net">@CatalogResources.Get("UsersManagement")</a></li>
+                            <li><a class="dropdown-item" href="@KeycloakOptions.Value.AdminConsoleUrl">@CatalogResources.Get("UsersManagement")</a></li>
                         }
                     </ul>
                 </li>

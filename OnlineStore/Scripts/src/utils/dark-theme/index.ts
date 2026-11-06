@@ -17,7 +17,7 @@ function applyTheme(theme: Theme) {
 }
 
 export function initDarkTheme() {
-    // Ставим тему сразу, до загрузки DOM, чтобы страница не мигала светлой темой
+    // Apply the theme immediately, before the DOM loads, so the page doesn't flash the light theme
     document.documentElement.setAttribute("data-bs-theme", getStoredTheme());
 
     $(() => {

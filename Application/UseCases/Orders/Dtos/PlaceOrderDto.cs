@@ -9,7 +9,7 @@ public record PlaceOrderDto
 
     public string CardHolderName { get; init; } = string.Empty;
     public string CardNumber { get; init; } = string.Empty;
-    // Формат MM/YY
+    // Format MM/YY
     public string ExpirationDate { get; init; } = string.Empty;
     public string Cvv { get; init; } = string.Empty;
 }

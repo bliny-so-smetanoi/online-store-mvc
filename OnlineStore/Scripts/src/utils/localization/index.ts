@@ -9,7 +9,7 @@ export async function loadResources(): Promise<ResourcesMap> {
     const response = await fetch(url, {
         headers: {
             "Accept": "application/json"
-            // optionally: "Current-Language": locale // если ты это читаешь на бэке
+            // optionally: "Current-Language": locale // if the backend reads it
         }
     });
 
@@ -25,7 +25,7 @@ export async function loadResources(): Promise<ResourcesMap> {
 // simple helper, like i18n.t()
 export function t(key: string, fallback?: string): string {
     if (!cachedResources) {
-        // если не загрузили – можно вернуть ключ или fallback
+        // if not loaded – return the key or the fallback
         return fallback ?? key;
     }
 

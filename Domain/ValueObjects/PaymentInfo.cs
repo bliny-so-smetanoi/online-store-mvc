@@ -2,7 +2,7 @@
 
 namespace Domain.ValueObjects;
 
-// Полный номер карты и CVV не сохраняются (PCI DSS): храним только маску, держателя и срок действия
+// The full card number and CVV are not stored (PCI DSS): only the mask, holder and expiry date are kept
 public class PaymentInfo : ValueObject
 {
     public string MaskedCardNumber { get; protected set; }

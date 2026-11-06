@@ -189,7 +189,7 @@ public class HomeController : Controller
         return View();
     }
 
-    // Корзина доступна только визитору: его id лежит в NameIdentifier (см. AccountController.VisitorLogin)
+    // The cart is available only to visitors: their id is in NameIdentifier (see AccountController.VisitorLogin)
     private Guid? GetVisitorId()
     {
         if (User.FindFirst("auth_source")?.Value != "visitor")

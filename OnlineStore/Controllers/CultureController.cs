@@ -49,7 +49,7 @@ public class CultureController : Controller
     {
         if (!string.IsNullOrEmpty(culture))
         {
-            // если надо – меняем культуру вручную
+            // change the culture manually if needed
             var ci = new CultureInfo(culture);
             CultureInfo.CurrentCulture = ci;
             CultureInfo.CurrentUICulture = ci;

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Services.VisitorService;
 
-// Для разработки: код пишется в лог. Для продакшена замени на отправку SMS.
+// For development: the code is written to the log. Replace with SMS delivery for production.
 public sealed class LoggingVisitorCodeSender(ILogger<LoggingVisitorCodeSender> logger) : IVisitorCodeSender
 {
     public Task SendAsync(string phone, string code, CancellationToken cancellationToken)

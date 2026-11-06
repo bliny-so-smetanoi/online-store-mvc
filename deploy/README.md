@@ -1,94 +1,94 @@
-# Развёртывание в Docker (Ubuntu Server)
+# Docker deployment (Ubuntu Server)
 
-Один `docker-compose.yml` в корне репозитория поднимает:
+A single `docker-compose.yml` in the repository root brings up:
 
-| Сервис | Что это | Наружу |
+| Service | What it is | Exposed |
 |---|---|---|
-| `caddy` | reverse proxy + автоматический HTTPS (Let's Encrypt) | 80, 443 |
-| `app` | OnlineStore (образ собирается из `Dockerfile`: webpack + dotnet publish) | через Caddy: `https://DOMAIN/` |
-| `keycloak` | Keycloak 26.1.4, realm `web-net` импортируется из `deploy/keycloak/web-net-realm.json` | через Caddy: `https://DOMAIN/auth` |
-| `sqlserver` | SQL Server 2022 (БД приложения и БД Keycloak) | `MSSQL_PORT` (1433), логин `sa` |
-| `sqlserver-init` | одноразово создаёт БД для Keycloak | — |
-| `seq` | логи Serilog | только `127.0.0.1:5341` на сервере |
+| `caddy` | reverse proxy + automatic HTTPS (Let's Encrypt) | 80, 443 |
+| `app` | OnlineStore (image built from the `Dockerfile`: webpack + dotnet publish) | via Caddy: `https://DOMAIN/` |
+| `keycloak` | Keycloak 26.1.4, realm `web-net` imported from `deploy/keycloak/web-net-realm.json` | via Caddy: `https://DOMAIN/auth` |
+| `sqlserver` | SQL Server 2022 (application DB and Keycloak DB) | `MSSQL_PORT` (1433), login `sa` |
+| `sqlserver-init` | one-off job that creates the Keycloak DB | — |
+| `seq` | Serilog logs | only `127.0.0.1:5341` on the server |
 
-## Требования
+## Requirements
 
-- Ubuntu 22.04/24.04 x64, минимум ~4 ГБ RAM (SQL Server требует 2 ГБ).
+- Ubuntu 22.04/24.04 x64, at least ~4 GB RAM (SQL Server needs 2 GB).
 - Docker Engine + Compose plugin: `curl -fsSL https://get.docker.com | sudo sh`
-- Домен с A-записью на IP сервера, открытые порты 80 и 443.
-  Без своего домена подойдёт `<ip-через-дефисы>.sslip.io`, например `203-0-113-10.sslip.io`.
+- A domain with an A record pointing to the server IP, ports 80 and 443 open.
+  Without your own domain you can use `<ip-with-dashes>.sslip.io`, e.g. `203-0-113-10.sslip.io`.
 
-HTTPS обязателен: без него браузер отбрасывает cookie входа OIDC, а Keycloak не пускает в консоль с внешних адресов.
+HTTPS is required: without it the browser drops the OIDC sign-in cookie, and Keycloak refuses console access from external addresses.
 
-## Первый запуск
+## First run
 
 ```bash
 git clone <repo> onlinestore && cd onlinestore
 cp .env.example .env
-nano .env        # DOMAIN, пароли, секреты (openssl rand -hex 24)
+nano .env        # DOMAIN, passwords, secrets (openssl rand -hex 24)
 docker compose up -d --build
 docker compose ps
 docker compose logs -f app
 ```
 
-Что происходит при старте:
-1. `sqlserver` → `sqlserver-init` создаёт БД Keycloak.
-2. `keycloak` при пустой БД импортирует realm `web-net` с клиентами `mvc-template` и `backend-admin`,
-   ролями `root`/`employee`/`visitor`; секреты и redirect URI берутся из `.env`.
-3. `app` применяет миграции EF Core (`Database__MigrateOnStartup=true`) и стартует.
+What happens on startup:
+1. `sqlserver` → `sqlserver-init` creates the Keycloak DB.
+2. `keycloak`, if its DB is empty, imports realm `web-net` with clients `mvc-template` and `backend-admin`
+   and roles `root`/`employee`/`visitor`; secrets and redirect URIs are taken from `.env`.
+3. `app` applies EF Core migrations (`Database__MigrateOnStartup=true`) and starts.
 
-## После первого запуска
+## After the first run
 
-Пользователей realm не содержит. Чтобы войти в админку магазина:
-1. Откройте `https://DOMAIN/auth/admin`, войдите `KEYCLOAK_ADMIN` / `KEYCLOAK_ADMIN_PASSWORD`.
-2. Realm `web-net` → Users → Create user, задайте пароль (Credentials) и назначьте realm-роль `root`.
+The realm contains no users. To sign in to the store admin area:
+1. Open `https://DOMAIN/auth/admin` and sign in with `KEYCLOAK_ADMIN` / `KEYCLOAK_ADMIN_PASSWORD`.
+2. Realm `web-net` → Users → Create user, set a password (Credentials) and assign the realm role `root`.
 
-## Обслуживание
+## Maintenance
 
 ```bash
-docker compose pull && docker compose up -d --build   # обновить образы и пересобрать приложение
-git pull && docker compose up -d --build app          # выкатить новую версию приложения
+docker compose pull && docker compose up -d --build   # update images and rebuild the app
+git pull && docker compose up -d --build app          # roll out a new app version
 docker compose logs -f keycloak
-ssh -L 5341:localhost:5341 user@server                # затем http://localhost:5341 — Seq
+ssh -L 5341:localhost:5341 user@server                # then http://localhost:5341 — Seq
 ```
 
-Бэкап SQL Server:
+SQL Server backup:
 
 ```bash
 docker compose exec sqlserver bash -c '/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -Q "BACKUP DATABASE [OnlineStore] TO DISK = N'"'"'/var/opt/mssql/data/OnlineStore.bak'"'"' WITH INIT"'
 docker compose cp sqlserver:/var/opt/mssql/data/OnlineStore.bak ./OnlineStore.bak
 ```
 
-## Подключение к SQL Server снаружи
+## Connecting to SQL Server from outside
 
-SSMS / Rider / Azure Data Studio: сервер `DOMAIN,1433` (или IP сервера), SQL-аутентификация `sa` / `MSSQL_SA_PASSWORD`,
-включите «Trust server certificate» (сертификат SQL Server самоподписанный).
+SSMS / Rider / Azure Data Studio: server `DOMAIN,1433` (or the server IP), SQL authentication `sa` / `MSSQL_SA_PASSWORD`,
+enable "Trust server certificate" (the SQL Server certificate is self-signed).
 
-Порт открыт для всего интернета, а Docker публикует порты в обход `ufw`. Поэтому:
-- задайте сильный `MSSQL_SA_PASSWORD`;
-- лучше ограничьте 1433 по IP в firewall'е провайдера/облака, либо
-- поставьте `MSSQL_BIND=127.0.0.1` и подключайтесь через туннель: `ssh -L 1433:localhost:1433 user@server`, сервер `localhost,1433`.
+The port is open to the whole internet, and Docker publishes ports bypassing `ufw`. Therefore:
+- set a strong `MSSQL_SA_PASSWORD`;
+- preferably restrict port 1433 by IP in your hosting/cloud provider's firewall, or
+- set `MSSQL_BIND=127.0.0.1` and connect through a tunnel: `ssh -L 1433:localhost:1433 user@server`, server `localhost,1433`.
 
-## Важно
+## Important
 
-- Realm импортируется **только если его ещё нет** в БД Keycloak. Изменения `.env` (секреты, `DOMAIN`) после этого
-  нужно вносить в консоли Keycloak вручную (Clients → mvc-template: Credentials, Valid redirect URIs).
-- Данные живут в docker volumes (`sqlserver-data`, `seq-data`, `caddy-data`, `app-dataprotection`).
-  `docker compose down -v` удалит их безвозвратно.
+- The realm is imported **only if it does not exist yet** in the Keycloak DB. After that, changes to `.env` (secrets, `DOMAIN`)
+  must be applied manually in the Keycloak console (Clients → mvc-template: Credentials, Valid redirect URIs).
+- Data lives in docker volumes (`sqlserver-data`, `seq-data`, `caddy-data`, `app-dataprotection`).
+  `docker compose down -v` deletes them permanently.
 
-## Локальная сеть / VirtualBox (без доступа из интернета)
+## Local network / VirtualBox (no internet access)
 
-Let's Encrypt не сможет проверить домен, поэтому включите самоподписанный сертификат:
+Let's Encrypt cannot verify the domain, so switch to a self-signed certificate:
 
 ```
 CADDY_TLS=internal
-DOMAIN=onlinestore.example.com   # или localhost / IP виртуалки
+DOMAIN=onlinestore.example.com   # or localhost / the VM's IP
 ```
 
-- Для домена добавьте на каждом клиенте в `hosts` (Windows: `C:\Windows\System32\drivers\etc\hosts`)
-  строку `<IP виртуалки> onlinestore.example.com`. Сайт открывается только по `DOMAIN`, не по IP —
-  на него ведут редиректы Keycloak.
-- VirtualBox NAT: пробросьте порты 80/443 (и 1433) с хоста и используйте `DOMAIN=localhost`.
-- Чтобы браузер не ругался, установите корневой сертификат Caddy в «Доверенные корневые центры сертификации»:
+- For a domain, add the line `<VM IP> onlinestore.example.com` to `hosts` on every client
+  (Windows: `C:\Windows\System32\drivers\etc\hosts`). The site only works via `DOMAIN`, not via the IP —
+  Keycloak redirects point to it.
+- VirtualBox NAT: forward ports 80/443 (and 1433) from the host and use `DOMAIN=localhost`.
+- To stop browser warnings, install Caddy's root certificate into "Trusted Root Certification Authorities":
   `docker compose cp caddy:/data/caddy/pki/authorities/local/root.crt ./caddy-root.crt`.
-- Переход на `CADDY_TLS=acme` позже: поменяйте `.env` и выполните `docker compose up -d caddy`.
+- Switching to `CADDY_TLS=acme` later: change `.env` and run `docker compose up -d caddy`.

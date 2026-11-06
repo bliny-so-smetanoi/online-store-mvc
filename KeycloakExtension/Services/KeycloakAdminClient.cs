@@ -170,7 +170,7 @@ public sealed class KeycloakAdminClient : IKeycloakAdminClient
 
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
-        // Обычно успех = 204 NoContent
+        // Success is usually 204 NoContent
         if (response.IsSuccessStatusCode)
             return;
 

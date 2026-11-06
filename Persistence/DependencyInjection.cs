@@ -24,7 +24,7 @@ public static class DependencyInjection
     }
     
     /// <summary>
-    /// Применяет миграции EF Core, если включён флаг Database:MigrateOnStartup (используется в docker-compose).
+    /// Applies EF Core migrations if the Database:MigrateOnStartup flag is enabled (used in docker-compose).
     /// </summary>
     public static async Task MigrateDatabaseIfEnabledAsync(this IServiceProvider services, IConfiguration configuration,
         CancellationToken cancellationToken = default)

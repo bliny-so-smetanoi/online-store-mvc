@@ -34,7 +34,7 @@ public static class DependencyInjection
             .AddOpenIdConnect("oidc", options =>
             {
                 options.Authority = auth["Authority"];
-                options.RequireHttpsMetadata = false; // только для dev
+                options.RequireHttpsMetadata = false; // dev only
                 options.ClientId = auth["ClientId"];
                 options.ClientSecret = auth["ClientSecret"];
 

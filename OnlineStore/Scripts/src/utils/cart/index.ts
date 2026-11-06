@@ -8,7 +8,7 @@ export class CartRequestError extends Error {
     }
 }
 
-// POST {productId} в AddToCart/RemoveFromCart. Ошибки сервера (400/401 с текстом) приходят как CartRequestError
+// POST {productId} to AddToCart/RemoveFromCart. Server errors (400/401 with text) arrive as CartRequestError
 export function postCartProduct(url: string, productId: string): Observable<void> {
     return fromFetch(url, {
         method: "POST",

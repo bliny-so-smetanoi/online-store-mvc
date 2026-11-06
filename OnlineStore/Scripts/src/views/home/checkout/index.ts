@@ -27,14 +27,14 @@ $(() => {
     const $submit = $("#checkout-submit");
     const $error = $("#checkout-error");
 
-    // Номер карты: только цифры, группами по 4
+    // Card number: digits only, in groups of 4
     fromEvent<InputEvent>($("#checkout-card-number"), "input").subscribe(event => {
         const input = event.target as HTMLInputElement;
         const digits = input.value.replace(/\D/g, "").slice(0, 19);
         input.value = digits.replace(/(\d{4})(?=\d)/g, "$1 ");
     });
 
-    // Срок действия: MM/YY
+    // Expiry date: MM/YY
     fromEvent<InputEvent>($("#checkout-expiration"), "input").subscribe(event => {
         const input = event.target as HTMLInputElement;
         const digits = input.value.replace(/\D/g, "").slice(0, 4);

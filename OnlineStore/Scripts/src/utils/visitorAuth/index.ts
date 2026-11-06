@@ -20,7 +20,7 @@ export function isVisitorAuthenticated(): boolean {
     return document.body.dataset.authenticated === "true";
 }
 
-// Открывает модальное окно входа. Promise завершается true после входа, false если окно закрыли.
+// Opens the sign-in modal. The promise resolves to true after sign-in, false if the modal was closed.
 export function requestVisitorAuth(): Promise<boolean> {
     if (isVisitorAuthenticated()) {
         return Promise.resolve(true);
@@ -45,7 +45,7 @@ export function initVisitorAuth() {
     });
 }
 
-// Antiforgery-токен из формы входа в _Layout; после входа сервер выдаёт новый (он привязан к пользователю)
+// Antiforgery token from the sign-in form in _Layout; after sign-in the server issues a new one (it is bound to the user)
 export function getRequestToken(): string {
     return String($("#visitor-login-form input[name='__RequestVerificationToken']").val() ?? "");
 }

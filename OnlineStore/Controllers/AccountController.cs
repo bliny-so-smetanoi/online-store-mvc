@@ -118,7 +118,7 @@ public class AccountController : Controller
             principal,
             authProperties);
 
-        // Antiforgery-токен привязан к пользователю: выдаём новый, иначе следующие POST после входа получат 400
+        // The antiforgery token is bound to the user: issue a new one, otherwise subsequent POSTs after sign-in get 400
         HttpContext.User = principal;
         var tokens = _antiforgery.GetAndStoreTokens(HttpContext);
 

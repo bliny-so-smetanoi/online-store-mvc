@@ -91,7 +91,7 @@ public sealed class VisitorLoginService : IVisitorLoginService
             keycloakUserId = existingUser.Id
                              ?? throw new InvalidOperationException("Existing Keycloak user has no id.");
 
-            // Пользователи, созданные без email, иначе не проходят вход: Keycloak требует дозаполнить профиль
+            // Otherwise users created without an email cannot sign in: Keycloak requires completing the profile
             if (string.IsNullOrEmpty(existingUser.Email))
             {
                 existingUser.Email = email;
