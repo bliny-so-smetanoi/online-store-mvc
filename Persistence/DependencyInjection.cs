@@ -23,6 +23,20 @@ public static class DependencyInjection
         AddRepositories(services);
     }
     
+    /// <summary>
+    /// Применяет миграции EF Core, если включён флаг Database:MigrateOnStartup (используется в docker-compose).
+    /// </summary>
+    public static async Task MigrateDatabaseIfEnabledAsync(this IServiceProvider services, IConfiguration configuration,
+        CancellationToken cancellationToken = default)
+    {
+        if (!bool.TryParse(configuration["Database:MigrateOnStartup"], out var migrate) || !migrate)
+            return;
+
+        await using var scope = services.CreateAsyncScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        await dbContext.Database.MigrateAsync(cancellationToken);
+    }
+
     private static void AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<ITodoItemRepository, TodoItemRepository>();

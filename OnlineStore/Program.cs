@@ -36,6 +36,8 @@ builder.Services.ConfigureMediator(typeof(CreateTodoItemCommand));
 
 var app = builder.Build();
 
+await app.Services.MigrateDatabaseIfEnabledAsync(app.Configuration, app.Lifetime.ApplicationStopping);
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

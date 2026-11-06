@@ -1,0 +1,146 @@
+# Полный стек OnlineStore: SQL Server + Keycloak + Seq + приложение + Caddy (HTTPS).
+# Запуск:  cp .env.example .env  →  заполнить .env  →  docker compose up -d --build
+# Подробности: deploy/README.md
+
+name: onlinestore
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: ${MSSQL_PID:-Express}
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Задайте MSSQL_SA_PASSWORD в .env}
+    ports:
+      # Доступ снаружи (SSMS/Rider): server,port. MSSQL_BIND=127.0.0.1 — только с самого сервера / через SSH-туннель
+      - "${MSSQL_BIND:-0.0.0.0}:${MSSQL_PORT:-1433}:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -Q 'SELECT 1' -b -o /dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  # Одноразовый контейнер: создаёт БД для Keycloak (Keycloak сам базу не создаёт).
+  # БД приложения создаёт само приложение при применении миграций.
+  sqlserver-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: "no"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      KEYCLOAK_DB_NAME: ${KEYCLOAK_DB_NAME:-KeycloakIdentity}
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - >-
+        /opt/mssql-tools18/bin/sqlcmd -C -S sqlserver -U sa -P "$$MSSQL_SA_PASSWORD" -b
+        -Q "IF DB_ID(N'$$KEYCLOAK_DB_NAME') IS NULL CREATE DATABASE [$$KEYCLOAK_DB_NAME];"
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.1.4
+    restart: unless-stopped
+    command: ["start", "--import-realm"]
+    depends_on:
+      sqlserver-init:
+        condition: service_completed_successfully
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN:-admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?Задайте KEYCLOAK_ADMIN_PASSWORD в .env}
+      KC_DB: mssql
+      KC_DB_URL: jdbc:sqlserver://sqlserver:1433;databaseName=${KEYCLOAK_DB_NAME:-KeycloakIdentity};encrypt=true;trustServerCertificate=true
+      KC_DB_USERNAME: sa
+      KC_DB_PASSWORD: ${MSSQL_SA_PASSWORD}
+      # Keycloak доступен снаружи по https://DOMAIN/auth через Caddy,
+      # а приложение ходит к нему напрямую по http://keycloak:8080/auth (backchannel)
+      KC_HTTP_ENABLED: "true"
+      KC_HTTP_RELATIVE_PATH: /auth
+      KC_HOSTNAME: https://${DOMAIN}/auth
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
+      KC_PROXY_HEADERS: xforwarded
+      KC_HEALTH_ENABLED: "true"
+      # Подставляются в deploy/keycloak/web-net-realm.json при первом импорте realm
+      APP_PUBLIC_URL: https://${DOMAIN}
+      MVC_CLIENT_SECRET: ${MVC_CLIENT_SECRET:?Задайте MVC_CLIENT_SECRET в .env}
+      BACKEND_ADMIN_CLIENT_SECRET: ${BACKEND_ADMIN_CLIENT_SECRET:?Задайте BACKEND_ADMIN_CLIENT_SECRET в .env}
+    volumes:
+      - ./deploy/keycloak:/opt/keycloak/data/import:ro
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9000 && printf 'GET /auth/health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && grep -q '\"UP\"' <&3"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+
+  seq:
+    image: datalust/seq:2024.3
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      # UI наружу не публикуется (см. ports), поэтому без собственной авторизации
+      SEQ_FIRSTRUN_NOAUTHENTICATION: "true"
+    volumes:
+      - seq-data:/data
+    ports:
+      # UI Seq только на localhost сервера: открывать через SSH-туннель (ssh -L 5341:localhost:5341 user@server)
+      - "127.0.0.1:${SEQ_UI_PORT:-5341}:80"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: onlinestore-app:latest
+    restart: unless-stopped
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+      seq:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      # Доверять X-Forwarded-* от Caddy (нужно для правильного redirect_uri https://.../signin-oidc)
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      Database__MigrateOnStartup: "true"
+      ConnectionStrings__DefaultConnection: Server=sqlserver,1433;Database=${APP_DB_NAME:-OnlineStore};User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;
+      Authentication__Authority: http://keycloak:8080/auth/realms/web-net
+      Authentication__ClientId: mvc-template
+      Authentication__ClientSecret: ${MVC_CLIENT_SECRET}
+      KeycloakProvisioning__BaseUrl: http://keycloak:8080/auth
+      KeycloakProvisioning__Realm: web-net
+      KeycloakProvisioning__AdminClientId: backend-admin
+      KeycloakProvisioning__AdminClientSecret: ${BACKEND_ADMIN_CLIENT_SECRET}
+      KeycloakProvisioning__UserTokenClientId: mvc-template
+      KeycloakProvisioning__UserTokenClientSecret: ${MVC_CLIENT_SECRET}
+      Serilog__WriteTo__1__Args__serverUrl: http://seq:5341
+    volumes:
+      - app-dataprotection:/home/app/.aspnet/DataProtection-Keys
+
+  caddy:
+    image: caddy:2.8
+    restart: unless-stopped
+    depends_on:
+      - app
+      - keycloak
+    environment:
+      DOMAIN: ${DOMAIN:?Задайте DOMAIN в .env}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./deploy/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  sqlserver-data:
+  seq-data:
+  app-dataprotection:
+  caddy-data:
+  caddy-config:
